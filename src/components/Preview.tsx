@@ -1,4 +1,4 @@
-import { Check, Copy, Download, FileCode2, ScanLine, X } from 'lucide-react'
+import { Check, Copy, Download, FileCode2, Info, ScanLine, X } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import type { Dict } from '../i18n'
 import { canCopyImage, copyImage } from '../lib/clipboard'
@@ -9,11 +9,12 @@ interface Props {
   opts: RenderOptions | null
   filename: string
   caption?: string
+  note?: string
   onExport: (thumb: string) => void
   t: Dict
 }
 
-export function Preview({ opts, filename, caption, onExport, t }: Props) {
+export function Preview({ opts, filename, caption, note, onExport, t }: Props) {
   const canvas = useRef<HTMLCanvasElement>(null)
   const [error, setError] = useState<string | null>(null)
   const [copied, setCopied] = useState<'ok' | 'fail' | null>(null)
@@ -106,6 +107,13 @@ export function Preview({ opts, filename, caption, onExport, t }: Props) {
           </Button>
         )}
       </div>
+
+      {note && (
+        <p className="mt-4 flex gap-2 rounded-2xl bg-mint-50 dark:bg-mint-500/10 px-3.5 py-3 text-xs leading-relaxed text-mint-900 dark:text-mint-200">
+          <Info className="mt-px h-3.5 w-3.5 shrink-0 text-mint-600 dark:text-mint-400" />
+          <span>{note}</span>
+        </p>
+      )}
     </Card>
   )
 }

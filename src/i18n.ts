@@ -51,6 +51,8 @@ const en = {
   copy: 'Copy',
   copied: 'Copied',
   copyFailed: 'Copy failed',
+  swissNote:
+    'This is the Swiss QR code only, ready to scan with a banking app. On invoices, Swiss rules require the full payment part (receipt and payment slip) with the code printed at 46 × 46 mm. Use SVG for sharp printing.',
   empty: 'Fill in the required fields to see your code.',
   requiredNote: 'Required field',
   history: 'Recent',
@@ -131,6 +133,8 @@ const de: Dict = {
   copy: 'Kopieren',
   copied: 'Kopiert',
   copyFailed: 'Fehlgeschlagen',
+  swissNote:
+    'Dies ist nur der Swiss QR Code, direkt scanbar mit einer Banking-App. Auf Rechnungen verlangen die Schweizer Vorgaben den vollständigen Zahlteil (Empfangsschein und Zahlteil) mit dem Code in 46 × 46 mm. Für scharfen Druck SVG verwenden.',
   empty: 'Fülle die Pflichtfelder aus, um deinen Code zu sehen.',
   requiredNote: 'Pflichtfeld',
   history: 'Zuletzt',

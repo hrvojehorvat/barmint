@@ -229,4 +229,14 @@ describe('BarMint app', () => {
     expect(screen.queryByRole('button', { name: /^copy$/i })).toBeNull()
     expect(png()).toBeInTheDocument()
   })
+
+  it('explains that the Swiss output is the QR code only', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+    expect(screen.queryByText(/Swiss QR code only/)).toBeNull()
+    await user.click(screen.getByRole('button', { name: /Switzerland/ }))
+    expect(screen.getByText(/Swiss QR code only/)).toBeInTheDocument()
+    await user.click(screen.getByRole('button', { name: /Germany/ }))
+    expect(screen.queryByText(/Swiss QR code only/)).toBeNull()
+  })
 })

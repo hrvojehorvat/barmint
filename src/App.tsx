@@ -206,6 +206,7 @@ export default function App() {
                   opts={opts}
                   filename={filename}
                   caption={mode === 'payment' ? t.standards[payment.country] : undefined}
+              note={mode === 'payment' && pay.standard === 'swiss' ? t.swissNote : undefined}
                   onExport={(thumb) =>
                     setHistory((h) =>
                       pushHistory(h, {
