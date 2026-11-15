@@ -1,9 +1,9 @@
 import { NgTemplateOutlet } from '@angular/common'
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core'
 import { LucideArrowLeft } from '@lucide/angular'
-import type { Lang } from '../../i18n'
-import { LEGAL, isPlaceholder } from '../../legal'
-import { Card } from '../ui/card'
+import type { Lang } from '../../../i18n'
+import { LEGAL, isPlaceholder } from '../../../legal'
+import { Card } from '../../ui/card'
 
 export type LegalPage = 'impressum' | 'datenschutz'
 

@@ -1,6 +1,8 @@
 import { ChangeDetectionStrategy, Component, DestroyRef, computed, effect, inject, signal } from '@angular/core'
-import { LucideCheck, LucideLeaf, LucideLink2, LucideLock, LucideScanBarcode, LucideX } from '@lucide/angular'
+import { RouterLink } from '@angular/router'
+import { LucideCheck, LucideLink2, LucideLock, LucideX } from '@lucide/angular'
 import { detectLang, dicts, type Lang } from '../../i18n'
+import { SITE } from '../../site'
 import { FORMATS, validateBarcode, type BarcodeData } from '../../lib/barcode'
 import { copyText } from '../../lib/clipboard'
 import { barcodeOptions, paymentOptions } from '../../lib/options'
@@ -16,11 +18,12 @@ import {
   type HistoryItem,
   type Mode,
 } from '../../lib/storage'
-import { BarcodeForm } from '../barcode-form/barcode-form'
-import { History } from '../history/history'
-import { Legal, legalPageFromHash, type LegalPage } from '../legal/legal'
-import { PaymentForm } from '../payment-form/payment-form'
-import { Preview } from '../preview/preview'
+import { BarcodeForm } from './barcode-form/barcode-form'
+import { History } from './history/history'
+import { BarMintLogo } from './logo'
+import { Legal, legalPageFromHash, type LegalPage } from './legal/legal'
+import { PaymentForm } from './payment-form/payment-form'
+import { Preview } from './preview/preview'
 import { Card } from '../ui/card'
 import { Segmented } from '../ui/segmented'
 
@@ -28,22 +31,23 @@ import { Segmented } from '../ui/segmented'
   selector: 'app-barmint',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    BarMintLogo,
     BarcodeForm,
     Card,
     History,
     Legal,
     PaymentForm,
     Preview,
+    RouterLink,
     Segmented,
     LucideCheck,
-    LucideLeaf,
     LucideLink2,
     LucideLock,
-    LucideScanBarcode,
     LucideX,
   ],
   templateUrl: './barmint.html',
-  host: { class: 'relative block min-h-screen overflow-x-hidden' },
+  // theme-mint: BarMint's accent colour for the shared UI (see styles.css).
+  host: { class: 'theme-mint relative block min-h-screen overflow-x-hidden bg-[#f3faf7] dark:bg-black' },
 })
 export class BarMint {
   protected readonly lang = signal<Lang>(detectLang())
@@ -56,6 +60,8 @@ export class BarMint {
   private linkTimer?: ReturnType<typeof setTimeout>
 
   protected readonly t = computed(() => dicts[this.lang()])
+  protected readonly path = location.pathname
+  protected readonly author = SITE.name
   protected readonly langs = [
     { value: 'de' as const, label: 'DE' },
     { value: 'en' as const, label: 'EN' },

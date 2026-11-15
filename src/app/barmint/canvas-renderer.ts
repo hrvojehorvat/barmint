@@ -1,5 +1,5 @@
 import { InjectionToken } from '@angular/core'
-import { renderCanvas } from '../lib/render'
+import { renderCanvas } from '../../lib/render'
 
 /**
  * Draws a code onto a canvas. Injected so component tests (jsdom has no canvas)

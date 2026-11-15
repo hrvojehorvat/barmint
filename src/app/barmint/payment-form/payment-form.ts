@@ -1,11 +1,11 @@
 import { ChangeDetectionStrategy, Component, type OnInit, computed, input, output, signal } from '@angular/core'
 import { LucideCheck, LucideChevronDown } from '@lucide/angular'
-import type { Dict } from '../../i18n'
-import { SAMPLE_IBAN, group4, type Country, type Errors, type PaymentData } from '../../lib/payment'
-import { SectionTitle } from '../ui/card'
-import { cx } from '../ui/cx'
-import { Field } from '../ui/field'
-import { Segmented } from '../ui/segmented'
+import type { Dict } from '../../../i18n'
+import { SAMPLE_IBAN, group4, type Country, type Errors, type PaymentData } from '../../../lib/payment'
+import { SectionTitle } from '../../ui/card'
+import { cx } from '../../ui/cx'
+import { Field } from '../../ui/field'
+import { Segmented } from '../../ui/segmented'
 
 const PAYER_KEYS = ['dName', 'dStreet', 'dHouseNo', 'dZip', 'dCity', 'dCountry'] as const
 

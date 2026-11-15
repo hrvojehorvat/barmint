@@ -1,20 +1,17 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core'
-import { BarMint } from './barmint/barmint'
+import { RouterOutlet } from '@angular/router'
 import { AppFailure, Recovery } from './recovery'
 
-/**
- * Root component. Hosts BarMint today; the portfolio pages (home, about, projects)
- * can be added here later, with BarMint as one of the projects.
- */
+/** Root component: the routed page (portfolio or a project), or the recovery screen after an error. */
 @Component({
   selector: 'app-root',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [BarMint, Recovery],
+  imports: [Recovery, RouterOutlet],
   template: `
     @if (failure.failed()) {
       <app-recovery />
     } @else {
-      <app-barmint />
+      <router-outlet />
     }
   `,
 })

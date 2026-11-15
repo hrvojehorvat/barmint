@@ -13,7 +13,7 @@ import { cx } from './cx'
       <span class="block text-[13px] font-medium text-neutral-600 dark:text-neutral-300 mb-1.5 ml-1">
         {{ label() }}
         @if (required()) {
-          <span class="ml-0.5 text-mint-600 dark:text-mint-400" aria-hidden="true">*</span>
+          <span class="ml-0.5 text-accent-600 dark:text-accent-400" aria-hidden="true">*</span>
         }
       </span>
       <input
@@ -65,7 +65,7 @@ export class Field {
       'w-full rounded-xl px-4 py-3 text-[15px] outline-none transition',
       'bg-black/[0.04] dark:bg-white/[0.07] text-neutral-900 dark:text-white placeholder:text-neutral-400',
       'ring-1 focus:bg-white dark:focus:bg-white/10 focus:ring-2',
-      this.shown() ? 'ring-red-500/70 focus:ring-red-500' : 'ring-transparent focus:ring-mint-500',
+      this.shown() ? 'ring-red-500/70 focus:ring-red-500' : 'ring-transparent focus:ring-accent-500',
       this.mono() && 'font-mono tracking-wide',
     ),
   )

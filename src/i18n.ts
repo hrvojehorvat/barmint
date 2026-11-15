@@ -60,6 +60,7 @@ const en = {
   share: 'Copy link',
   linkCopied: 'Link copied',
   footer: 'Runs 100% in your browser. Your data never leaves your device.',
+  madeBy: 'A project by',
   legal: { impressum: 'Legal notice', privacy: 'Privacy' },
   errors: {
     required: 'Required',
@@ -142,6 +143,7 @@ const de: Dict = {
   share: 'Link kopieren',
   linkCopied: 'Link kopiert',
   footer: 'Läuft zu 100 % im Browser. Deine Daten verlassen nie dein Gerät.',
+  madeBy: 'Ein Projekt von',
   legal: { impressum: 'Impressum', privacy: 'Datenschutz' },
   errors: {
     required: 'Pflichtfeld',

@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core'
-import type { Dict } from '../../i18n'
-import type { HistoryItem } from '../../lib/storage'
-import { Card } from '../ui/card'
+import type { Dict } from '../../../i18n'
+import type { HistoryItem } from '../../../lib/storage'
+import { Card } from '../../ui/card'
 
 @Component({
   selector: 'app-history',

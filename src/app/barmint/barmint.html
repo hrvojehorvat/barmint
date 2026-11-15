@@ -16,16 +16,7 @@
 >
   <div class="mx-auto flex h-14 max-w-6xl items-center justify-between px-4 sm:px-6">
     <div class="flex items-center gap-2.5">
-      <span
-        class="relative flex h-8 w-8 items-center justify-center rounded-[10px] bg-gradient-to-br from-mint-300 to-mint-600 text-white shadow-[0_4px_14px_-4px_rgba(31,174,136,0.7)]"
-      >
-        <svg lucideScanBarcode class="h-4.5 w-4.5"></svg>
-        <span
-          class="absolute -top-1.5 -right-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-white dark:bg-neutral-900 ring-1 ring-mint-200 dark:ring-mint-700"
-        >
-          <svg lucideLeaf class="h-2.5 w-2.5 text-mint-500" [strokeWidth]="2.5"></svg>
-        </span>
-      </span>
+      <app-barmint-logo class="h-8 w-8" />
       <span class="text-[17px] font-semibold tracking-tight text-neutral-900 dark:text-white">
         Bar<span class="text-mint-500">Mint</span>
       </span>
@@ -109,8 +100,12 @@
   <footer class="mt-16 flex flex-col items-center gap-3 text-xs text-neutral-400">
     <span class="flex items-center gap-2"> <svg lucideLock class="h-3.5 w-3.5"></svg> {{ tr.footer }} </span>
     <nav class="flex gap-4">
-      <a href="#impressum" class="hover:text-mint-600">{{ tr.legal.impressum }}</a>
-      <a href="#datenschutz" class="hover:text-mint-600">{{ tr.legal.privacy }}</a>
+      <!-- Full path: with <base href="/"> a bare "#impressum" would point to the portfolio home. -->
+      <a [href]="path + '#impressum'" class="hover:text-mint-600">{{ tr.legal.impressum }}</a>
+      <a [href]="path + '#datenschutz'" class="hover:text-mint-600">{{ tr.legal.privacy }}</a>
     </nav>
+    <span>
+      {{ tr.madeBy }} <a routerLink="/" class="font-medium text-neutral-500 hover:text-mint-600">{{ author }}</a>
+    </span>
   </footer>
 </main>

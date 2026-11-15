@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/angular'
 import { describe, expect, it } from 'vitest'
-import { dicts } from '../../i18n'
-import type { RenderOptions } from '../../lib/render'
+import { dicts } from '../../../i18n'
+import type { RenderOptions } from '../../../lib/render'
 import { CANVAS_RENDERER } from '../canvas-renderer'
 import { Preview } from './preview'
 

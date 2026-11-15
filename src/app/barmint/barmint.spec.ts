@@ -1,17 +1,20 @@
 import { TestBed } from '@angular/core/testing'
+import { provideRouter } from '@angular/router'
 import { render, screen, within } from '@testing-library/angular'
 import userEvent from '@testing-library/user-event'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { SAMPLE_IBAN, type PaymentData } from '../../lib/payment'
 import { defaultState, writeUrlState } from '../../lib/storage'
 import { samplePayment, sampleSwiss } from '../../test/fixtures'
-import { CANVAS_RENDERER } from '../canvas-renderer'
+import { CANVAS_RENDERER } from './canvas-renderer'
 import { BarMint } from './barmint'
 
 // jsdom has no canvas; rendering itself is covered by scan.test.ts.
 const setup = async () => {
   const user = userEvent.setup()
-  const view = await render(BarMint, { providers: [{ provide: CANVAS_RENDERER, useValue: () => {} }] })
+  const view = await render(BarMint, {
+    providers: [provideRouter([]), { provide: CANVAS_RENDERER, useValue: () => {} }],
+  })
   return { user, view, stable: () => view.fixture.whenStable() }
 }
 
@@ -23,9 +26,10 @@ const seed = (payment: PaymentData = samplePayment) => writeUrlState({ ...defaul
 beforeEach(() => localStorage.setItem('lang', 'en'))
 
 describe('BarMint app', () => {
-  it('shows the brand', async () => {
+  it('shows the brand and links back to the portfolio', async () => {
     await setup()
     expect(screen.getByText('Mint')).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'Mrvoje' })).toHaveAttribute('href', '/')
   })
 
   it('marks required fields in the payment form', async () => {

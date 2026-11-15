@@ -1,10 +1,10 @@
 import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core'
-import type { Dict } from '../../i18n'
-import { FORMATS, SAMPLE_TEXT, type BarcodeData, type Format } from '../../lib/barcode'
-import type { Errors } from '../../lib/payment'
-import { SectionTitle } from '../ui/card'
-import { cx } from '../ui/cx'
-import { Field } from '../ui/field'
+import type { Dict } from '../../../i18n'
+import { FORMATS, SAMPLE_TEXT, type BarcodeData, type Format } from '../../../lib/barcode'
+import type { Errors } from '../../../lib/payment'
+import { SectionTitle } from '../../ui/card'
+import { cx } from '../../ui/cx'
+import { Field } from '../../ui/field'
 
 @Component({
   selector: 'app-barcode-form',

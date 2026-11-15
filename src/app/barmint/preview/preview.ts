@@ -12,12 +12,12 @@ import {
   viewChild,
 } from '@angular/core'
 import { LucideCheck, LucideCopy, LucideDownload, LucideFileCode2, LucideInfo, LucideScanLine, LucideX } from '@lucide/angular'
-import type { Dict } from '../../i18n'
-import { canCopyImage, copyImage } from '../../lib/clipboard'
-import { cleanError, downloadPNG, downloadSVG, type RenderOptions } from '../../lib/render'
+import type { Dict } from '../../../i18n'
+import { canCopyImage, copyImage } from '../../../lib/clipboard'
+import { cleanError, downloadPNG, downloadSVG, type RenderOptions } from '../../../lib/render'
 import { CANVAS_RENDERER } from '../canvas-renderer'
-import { Button } from '../ui/button'
-import { Card } from '../ui/card'
+import { Button } from '../../ui/button'
+import { Card } from '../../ui/card'
 
 @Component({
   selector: 'app-preview',

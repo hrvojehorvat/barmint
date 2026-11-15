@@ -34,7 +34,7 @@ const text = {
         <button
           type="button"
           (click)="reset()"
-          class="mt-6 rounded-full bg-mint-500 px-5 py-2.5 text-sm font-medium text-white hover:bg-mint-600"
+          class="mt-6 rounded-full bg-accent-500 px-5 py-2.5 text-sm font-medium text-accent-contrast hover:bg-accent-600"
         >
           {{ t.reset }}
         </button>

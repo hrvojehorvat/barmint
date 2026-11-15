@@ -14,7 +14,7 @@ export class Button {
   readonly variant = input<'primary' | 'secondary'>('secondary')
   protected readonly variantClass = computed(() =>
     this.variant() === 'primary'
-      ? 'bg-mint-500 text-white hover:bg-mint-600 shadow-[0_6px_20px_-6px_rgba(31,174,136,0.6)]'
+      ? 'bg-accent-500 text-accent-contrast hover:bg-accent-600 shadow-[0_6px_20px_-6px_color-mix(in_oklab,var(--color-accent-500)_60%,transparent)]'
       : 'bg-black/[0.06] dark:bg-white/10 text-neutral-800 dark:text-white hover:bg-black/10 dark:hover:bg-white/15',
   )
 }
