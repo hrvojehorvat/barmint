@@ -27,13 +27,6 @@ export function downloadSVG(opts: RenderOptions, name: string) {
   setTimeout(() => URL.revokeObjectURL(url), 1000)
 }
 
-export async function copyPNG(canvas: HTMLCanvasElement) {
-  const blob = await new Promise<Blob>((res, rej) =>
-    canvas.toBlob((b) => (b ? res(b) : rej(new Error('toBlob failed'))), 'image/png'),
-  )
-  await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })])
-}
-
 /** Error messages from BWIPP look like "bwipp.ean13badCheckDigit: Incorrect EAN-13 check digit". */
 export const cleanError = (e: unknown) =>
   String(e instanceof Error ? e.message : e).replace(/^bwipp?\.\w+:\s*/, '')

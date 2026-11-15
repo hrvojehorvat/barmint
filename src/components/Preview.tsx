@@ -1,7 +1,8 @@
-import { Check, Copy, Download, FileCode2, ScanLine } from 'lucide-react'
+import { Check, Copy, Download, FileCode2, ScanLine, X } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import type { Dict } from '../i18n'
-import { cleanError, copyPNG, downloadPNG, downloadSVG, renderCanvas, type RenderOptions } from '../lib/render'
+import { canCopyImage, copyImage } from '../lib/clipboard'
+import { cleanError, downloadPNG, downloadSVG, renderCanvas, type RenderOptions } from '../lib/render'
 import { Button, Card } from './ui'
 
 interface Props {
@@ -15,7 +16,8 @@ interface Props {
 export function Preview({ opts, filename, caption, onExport, t }: Props) {
   const canvas = useRef<HTMLCanvasElement>(null)
   const [error, setError] = useState<string | null>(null)
-  const [copied, setCopied] = useState(false)
+  const [copied, setCopied] = useState<'ok' | 'fail' | null>(null)
+  const [canCopy] = useState(canCopyImage)
 
   useEffect(() => {
     if (!opts || !canvas.current) return
@@ -63,7 +65,7 @@ export function Preview({ opts, filename, caption, onExport, t }: Props) {
         )}
       </div>
 
-      <div className="mt-5 grid grid-cols-3 gap-2">
+      <div className={`mt-5 grid gap-2 ${canCopy ? 'grid-cols-3' : 'grid-cols-2'}`}>
         <Button
           variant="primary"
           disabled={!ready}
@@ -83,18 +85,26 @@ export function Preview({ opts, filename, caption, onExport, t }: Props) {
         >
           <FileCode2 className="h-4 w-4" /> {t.svg}
         </Button>
-        <Button
-          disabled={!ready}
-          onClick={async () => {
-            await copyPNG(canvas.current!)
-            exported()
-            setCopied(true)
-            setTimeout(() => setCopied(false), 1500)
-          }}
-        >
-          {copied ? <Check className="h-4 w-4 text-mint-500" /> : <Copy className="h-4 w-4" />}
-          {copied ? t.copied : t.copy}
-        </Button>
+        {canCopy && (
+          <Button
+            disabled={!ready}
+            onClick={async () => {
+              const ok = await copyImage(canvas.current!)
+              if (ok) exported()
+              setCopied(ok ? 'ok' : 'fail')
+              setTimeout(() => setCopied(null), 2000)
+            }}
+          >
+            {copied === 'ok' ? (
+              <Check className="h-4 w-4 text-mint-500" />
+            ) : copied === 'fail' ? (
+              <X className="h-4 w-4 text-red-500" />
+            ) : (
+              <Copy className="h-4 w-4" />
+            )}
+            {copied === 'ok' ? t.copied : copied === 'fail' ? t.copyFailed : t.copy}
+          </Button>
+        )}
       </div>
     </Card>
   )

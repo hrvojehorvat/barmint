@@ -1,4 +1,4 @@
-import { Check, Leaf, Link2, Lock, ScanBarcode } from 'lucide-react'
+import { Check, Leaf, Link2, Lock, ScanBarcode, X } from 'lucide-react'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { BarcodeForm } from './components/BarcodeForm'
 import { History } from './components/History'
@@ -8,6 +8,7 @@ import { Preview } from './components/Preview'
 import { Card, Segmented } from './components/ui'
 import { detectLang, dicts, type Lang } from './i18n'
 import { FORMATS, validateBarcode } from './lib/barcode'
+import { copyText } from './lib/clipboard'
 import { barcodeOptions, paymentOptions } from './lib/options'
 import { autoPurpose, buildPayment, parseAmount } from './lib/payment'
 import type { RenderOptions } from './lib/render'
@@ -26,7 +27,7 @@ export default function App() {
   const [lang, setLang] = useState<Lang>(detectLang)
   const [state, setState] = useState<AppState>(readUrlState)
   const [history, setHistory] = useState<HistoryItem[]>(loadHistory)
-  const [linkCopied, setLinkCopied] = useState(false)
+  const [linkCopied, setLinkCopied] = useState<'ok' | 'fail' | null>(null)
   const [page, setPage] = useState<LegalPage | null>(() => legalPageFromHash(location.hash))
   // True once the user navigated to a legal page from within the app, so "back" stays on BarMint.
   const navigatedInApp = useRef(false)
@@ -119,14 +120,25 @@ export default function App() {
             <button
               type="button"
               onClick={async () => {
-                await navigator.clipboard.writeText(location.href)
-                setLinkCopied(true)
-                setTimeout(() => setLinkCopied(false), 1500)
+                const ok = await copyText(location.href)
+                // Last resort: show the link so it can be copied by hand.
+                if (!ok) window.prompt(t.share, location.href)
+                setLinkCopied(ok ? 'ok' : 'fail')
+                setTimeout(() => setLinkCopied(null), 1500)
               }}
-              className="hidden sm:inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium text-neutral-600 dark:text-neutral-300 hover:bg-black/5 dark:hover:bg-white/10"
+              aria-label={t.share}
+              className="inline-flex items-center gap-1.5 rounded-full px-2.5 sm:px-3 py-1.5 text-xs font-medium text-neutral-600 dark:text-neutral-300 hover:bg-black/5 dark:hover:bg-white/10"
             >
-              {linkCopied ? <Check className="h-3.5 w-3.5 text-mint-500" /> : <Link2 className="h-3.5 w-3.5" />}
-              {linkCopied ? t.linkCopied : t.share}
+              {linkCopied === 'ok' ? (
+                <Check className="h-3.5 w-3.5 text-mint-500" />
+              ) : linkCopied === 'fail' ? (
+                <X className="h-3.5 w-3.5 text-red-500" />
+              ) : (
+                <Link2 className="h-3.5 w-3.5" />
+              )}
+              <span className="hidden sm:inline" aria-live="polite">
+                {linkCopied === 'ok' ? t.linkCopied : linkCopied === 'fail' ? t.copyFailed : t.share}
+              </span>
             </button>
             <Segmented
               size="sm"

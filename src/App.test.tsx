@@ -207,4 +207,26 @@ describe('BarMint app', () => {
     expect(await screen.findByRole('textbox', { name: /^Name/ })).toBeInTheDocument()
     expect(location.hash).toMatch(/^#s=/)
   })
+
+  it('copies the share link, and offers it by hand when copying fails', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+    const writeText = vi.spyOn(navigator.clipboard, 'writeText')
+    await user.click(screen.getByRole('button', { name: 'Copy link' }))
+    expect(writeText).toHaveBeenCalledWith(location.href)
+    expect(await screen.findByText('Link copied')).toBeInTheDocument()
+
+    writeText.mockRejectedValueOnce(new Error('NotAllowedError'))
+    document.execCommand = vi.fn().mockReturnValue(false)
+    const prompt = vi.spyOn(window, 'prompt').mockReturnValue(null)
+    await user.click(screen.getByRole('button', { name: 'Copy link' }))
+    expect(prompt).toHaveBeenCalledWith('Copy link', location.href)
+    expect(await screen.findByText('Copy failed')).toBeInTheDocument()
+  })
+
+  it('hides the image copy button where the browser cannot copy images', () => {
+    render(<App />)
+    expect(screen.queryByRole('button', { name: /^copy$/i })).toBeNull()
+    expect(png()).toBeInTheDocument()
+  })
 })
