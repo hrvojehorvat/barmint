@@ -162,4 +162,16 @@ describe('BarMint app', () => {
     expect(screen.getByLabelText('Incomplete')).toBeInTheDocument()
     expect(png()).toBeDisabled()
   })
+
+  it('loads a different link pasted into the same tab', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+    await user.clear(field(/^Name/))
+    await user.type(field(/^Name/), 'Link A')
+    const linkA = location.hash
+    await user.clear(field(/^Name/))
+    await user.type(field(/^Name/), 'Link B')
+    location.hash = linkA
+    await screen.findByDisplayValue('Link A')
+  })
 })

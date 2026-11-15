@@ -10,15 +10,29 @@ const state: AppState = {
 describe('URL state', () => {
   it('round-trips including non-ASCII text', () => {
     writeUrlState(state)
-    expect(location.search).toMatch(/^\?s=[\w-]+$/)
+    expect(location.hash).toMatch(/^#s=[\w-]+$/)
     expect(readUrlState()).toEqual(state)
   })
+  it('keeps data out of the query string, which is sent to the server', () => {
+    writeUrlState(state)
+    expect(location.search).toBe('')
+    expect(location.href).not.toContain('?')
+  })
+  it('still reads old ?s= links and migrates them to #s=', () => {
+    writeUrlState(state)
+    const legacy = location.hash.replace('#', '?')
+    history.replaceState(null, '', `/${legacy}`)
+    expect(readUrlState()).toEqual(state)
+    writeUrlState(readUrlState())
+    expect(location.search).toBe('')
+    expect(location.hash).toMatch(/^#s=/)
+  })
   it('falls back to defaults on malformed links', () => {
-    history.replaceState(null, '', '/?s=%%%garbage')
+    history.replaceState(null, '', '/#s=%%%garbage')
     expect(readUrlState()).toEqual(defaultState)
   })
   it('fills in fields missing from older links', () => {
-    history.replaceState(null, '', `/?s=${btoa(JSON.stringify({ payment: { name: 'X' } }))}`)
+    history.replaceState(null, '', `/#s=${btoa(JSON.stringify({ payment: { name: 'X' } }))}`)
     const s = readUrlState()
     expect(s.payment.name).toBe('X')
     expect(s.payment.iban).toBe(defaultState.payment.iban)

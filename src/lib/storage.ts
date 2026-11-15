@@ -35,9 +35,15 @@ const hydrate = (s: Partial<AppState>): AppState => ({
   barcode: { ...defaultBarcode, ...s.barcode },
 })
 
+/**
+ * State lives in the URL fragment (#s=…). Browsers never send the fragment to the
+ * server, so names and IBANs don't end up in hosting access logs.
+ * Older links used the query string (?s=…); those are still read and then migrated.
+ */
 export function readUrlState(): AppState {
   try {
-    const s = new URLSearchParams(location.search).get('s')
+    const s =
+      new URLSearchParams(location.hash.slice(1)).get('s') ?? new URLSearchParams(location.search).get('s')
     if (s) return hydrate(JSON.parse(fromB64(s)))
   } catch {
     /* ignore malformed links */
@@ -46,8 +52,8 @@ export function readUrlState(): AppState {
 }
 
 export function writeUrlState(state: AppState) {
-  const url = `${location.pathname}?s=${toB64(JSON.stringify(state))}`
-  history.replaceState(null, '', url)
+  // Rebuilding from pathname also drops a legacy ?s= query.
+  history.replaceState(null, '', `${location.pathname}#s=${toB64(JSON.stringify(state))}`)
 }
 
 const HISTORY_KEY = 'barcode-history'

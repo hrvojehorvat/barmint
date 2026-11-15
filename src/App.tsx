@@ -39,6 +39,12 @@ export default function App() {
   }, [lang])
 
   useEffect(() => writeUrlState(state), [state])
+  // Pasting another BarMint link into the same tab only changes the #fragment (no reload).
+  useEffect(() => {
+    const onHash = () => setState(readUrlState())
+    window.addEventListener('hashchange', onHash)
+    return () => window.removeEventListener('hashchange', onHash)
+  }, [])
   useEffect(() => saveHistory(history), [history])
 
   // Fixed per page load so the code doesn't change every second.
