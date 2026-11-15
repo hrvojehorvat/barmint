@@ -12,7 +12,7 @@
   --color-mint-800: #12594a;
   --color-mint-900: #114a3e;
 
-  --font-sans: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Inter', system-ui, sans-serif;
+  --font-sans: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Inter Variable', system-ui, sans-serif;
   --font-mono: 'SF Mono', ui-monospace, 'JetBrains Mono', Menlo, monospace;
 }
 
