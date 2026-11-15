@@ -69,8 +69,9 @@ const impressum: Record<Lang, { title: string; sections: Section[] }> = {
       [
         'Marken',
         <p>
-          GiroCode ist eine Marke der GBIC. Swiss QR-bill ist ein Standard der SIX Group. Keine Verbindung zu diesen
-          Organisationen.
+          GiroCode, EPC QR und Swiss QR-bill sind Bezeichnungen von Zahlungsstandards; alle Rechte liegen bei den
+          jeweiligen Inhabern. BarMint steht in keiner Verbindung zu Banken, dem European Payments Council oder SIX und
+          wird von diesen nicht unterstützt.
         </p>,
       ],
     ],
@@ -96,7 +97,10 @@ const impressum: Record<Lang, { title: string; sections: Section[] }> = {
       ],
       [
         'Trademarks',
-        <p>GiroCode is a trademark of GBIC. Swiss QR-bill is a standard of SIX Group. Not affiliated with either.</p>,
+        <p>
+          GiroCode, EPC QR and Swiss QR-bill are names of payment standards; all rights belong to their respective
+          owners. BarMint is not affiliated with or endorsed by any bank, the European Payments Council or SIX.
+        </p>,
       ],
     ],
   },
