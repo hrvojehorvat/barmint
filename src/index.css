@@ -1,0 +1,34 @@
+@import 'tailwindcss';
+
+@theme {
+  --color-mint-50: #effcf7;
+  --color-mint-100: #d6f7ea;
+  --color-mint-200: #b0eed8;
+  --color-mint-300: #7fdfc1;
+  --color-mint-400: #4cc9a5;
+  --color-mint-500: #1fae88;
+  --color-mint-600: #138c6f;
+  --color-mint-700: #11705a;
+  --color-mint-800: #12594a;
+  --color-mint-900: #114a3e;
+
+  --font-sans: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Inter', system-ui, sans-serif;
+  --font-mono: 'SF Mono', ui-monospace, 'JetBrains Mono', Menlo, monospace;
+}
+
+:root {
+  color-scheme: light dark;
+  accent-color: var(--color-mint-500);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+}
+
+body {
+  @apply bg-[#f3faf7] dark:bg-black font-sans antialiased;
+  -webkit-font-smoothing: antialiased;
+}
