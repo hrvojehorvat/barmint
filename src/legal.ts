@@ -6,8 +6,8 @@
 export const LEGAL = {
   /** Full name of the person (or company) responsible for the site. */
   name: 'Hrvoje Mrvoje',
-  street: 'Flurgase 23',
-  city: 'Graz',
+  street: 'Flurgasse 23',
+  city: '8010 Graz',
   country: 'Österreich',
   email: 'hmrvoje@gmail.com',
   /** Optional: leave empty to hide. */
