@@ -47,7 +47,8 @@ export class Preview {
     afterRenderEffect({
       write: () => {
         const opts = this.opts()
-        if (!opts) return
+        // No code to show (invalid or empty input): forget an earlier render error too.
+        if (!opts) return this.error.set(null)
         try {
           this.render(this.canvas().nativeElement, opts)
           this.error.set(null)
