@@ -28,7 +28,7 @@ export function History({ items, onPick, onClear, t }: Props) {
               className="flex w-full items-center gap-3 rounded-xl p-2 text-left transition hover:bg-black/[0.04] dark:hover:bg-white/[0.06]"
             >
               <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-white ring-1 ring-black/5 p-1">
-                <img src={i.thumb} alt="" className="max-h-full max-w-full" />
+                {i.thumb && <img src={i.thumb} alt="" className="max-h-full max-w-full" />}
               </span>
               <span className="min-w-0">
                 <span className="block truncate text-sm font-medium text-neutral-800 dark:text-neutral-100">{i.label}</span>

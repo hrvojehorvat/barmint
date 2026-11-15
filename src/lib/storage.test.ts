@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { defaultState, loadHistory, pushHistory, readUrlState, saveHistory, writeUrlState, type AppState } from './storage'
+import { defaultState, hydrate, loadHistory, pushHistory, readUrlState, saveHistory, writeUrlState, type AppState } from './storage'
 
 const state: AppState = {
   ...defaultState,
@@ -43,7 +43,7 @@ describe('URL state', () => {
 describe('history', () => {
   const item = (name: string) => ({
     label: name,
-    thumb: 'data:,',
+    thumb: 'data:image/png;base64,AAAA',
     state: { ...defaultState, payment: { ...defaultState.payment, name } },
   })
 
@@ -66,6 +66,55 @@ describe('history', () => {
   })
   it('survives corrupted storage', () => {
     localStorage.setItem('barcode-history', '{nope')
+    expect(loadHistory()).toEqual([])
+  })
+})
+
+describe('tampered input', () => {
+  const link = (v: unknown) => history.replaceState(null, '', `/#s=${btoa(JSON.stringify(v))}`)
+
+  it('replaces wrong types with defaults instead of crashing', () => {
+    link({
+      mode: 'evil',
+      payment: { name: 42, iban: { x: 1 }, country: 'FR', currency: 'USD', message: ['a'] },
+      barcode: { format: 'pdf417', text: null, fg: 'red;}', bg: 'javascript:1', scale: '1e9', showText: 'yes' },
+    })
+    expect(readUrlState()).toEqual(defaultState)
+  })
+  it('clamps the scale and keeps valid values', () => {
+    const s = hydrate({ barcode: { format: 'ean13', scale: -5, fg: '#12ABef' } })
+    expect(s.barcode).toMatchObject({ format: 'ean13', scale: 1, fg: '#12ABef' })
+    expect(hydrate({ barcode: { scale: 99 } }).barcode.scale).toBe(10)
+    expect(hydrate({ barcode: { scale: NaN } }).barcode.scale).toBe(defaultState.barcode.scale)
+  })
+  it('handles non-object JSON', () => {
+    for (const v of [null, 1, 'x', [1, 2], true]) expect(hydrate(v)).toEqual(defaultState)
+  })
+  it('caps very long strings', () => {
+    expect(hydrate({ payment: { name: 'a'.repeat(100_000) } }).payment.name).toHaveLength(500)
+  })
+  it('ignores unknown keys', () => {
+    const s = hydrate({ payment: { __proto__: { x: 1 }, evil: 'x' } }) as unknown as { payment: Record<string, unknown> }
+    expect(s.payment.evil).toBeUndefined()
+  })
+  it('sanitises history from localStorage', () => {
+    localStorage.setItem(
+      'barcode-history',
+      JSON.stringify([
+        { id: 'a', ts: 1, label: 'ok', thumb: 'data:image/png;base64,AAAA', state: { mode: 'barcode' } },
+        { id: 'b', ts: 'x', label: 5, thumb: 'javascript:alert(1)', state: 'nope' },
+        null,
+        'str',
+      ]),
+    )
+    const items = loadHistory()
+    expect(items).toHaveLength(2)
+    expect(items[0].thumb).toBe('data:image/png;base64,AAAA')
+    expect(items[0].state.mode).toBe('barcode')
+    expect(items[1]).toMatchObject({ ts: 0, label: '', thumb: '', state: defaultState })
+  })
+  it('returns empty history when storage holds a non-array', () => {
+    localStorage.setItem('barcode-history', '{"a":1}')
     expect(loadHistory()).toEqual([])
   })
 })

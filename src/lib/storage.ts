@@ -1,4 +1,4 @@
-import { defaultBarcode, type BarcodeData } from './barcode'
+import { defaultBarcode, FORMATS, type BarcodeData } from './barcode'
 import { defaultPayment, type PaymentData } from './payment'
 
 export type Mode = 'payment' | 'barcode'
@@ -28,12 +28,48 @@ const toB64 = (s: string) =>
 const fromB64 = (s: string) =>
   new TextDecoder().decode(Uint8Array.from(atob(s.replace(/-/g, '+').replace(/_/g, '/')), (c) => c.charCodeAt(0)))
 
-/** Merge a possibly partial / outdated saved state onto the defaults. */
-const hydrate = (s: Partial<AppState>): AppState => ({
-  mode: s.mode === 'barcode' ? 'barcode' : 'payment',
-  payment: { ...defaultPayment, ...s.payment },
-  barcode: { ...defaultBarcode, ...s.barcode },
-})
+// Links and localStorage are untrusted input: anyone can craft a #s= link.
+// Every value is checked against the type of its default; anything else falls back.
+const MAX_LEN = 500
+const isObj = (v: unknown): v is Record<string, unknown> => typeof v === 'object' && v !== null && !Array.isArray(v)
+const str = (v: unknown, fallback: string) => (typeof v === 'string' ? v.slice(0, MAX_LEN) : fallback)
+const oneOf = <T extends string>(v: unknown, allowed: readonly T[], fallback: T): T =>
+  allowed.includes(v as T) ? (v as T) : fallback
+const color = (v: unknown, fallback: string) => (typeof v === 'string' && /^#[0-9a-f]{6}$/i.test(v) ? v : fallback)
+
+function cleanPayment(v: unknown): PaymentData {
+  const p = isObj(v) ? v : {}
+  const out = { ...defaultPayment }
+  for (const k of Object.keys(out) as (keyof PaymentData)[]) {
+    if (k !== 'country' && k !== 'currency') out[k] = str(p[k], defaultPayment[k])
+  }
+  out.country = oneOf(p.country, ['DE', 'AT', 'CH'] as const, defaultPayment.country)
+  out.currency = oneOf(p.currency, ['EUR', 'CHF'] as const, defaultPayment.currency)
+  return out
+}
+
+function cleanBarcode(v: unknown): BarcodeData {
+  const b = isObj(v) ? v : {}
+  const scale = typeof b.scale === 'number' && Number.isFinite(b.scale) ? Math.round(b.scale) : defaultBarcode.scale
+  return {
+    format: oneOf(b.format, FORMATS.map((f) => f.id), defaultBarcode.format),
+    text: str(b.text, defaultBarcode.text),
+    fg: color(b.fg, defaultBarcode.fg),
+    bg: color(b.bg, defaultBarcode.bg),
+    scale: Math.min(10, Math.max(1, scale)),
+    showText: typeof b.showText === 'boolean' ? b.showText : defaultBarcode.showText,
+  }
+}
+
+/** Turn a possibly partial, outdated or tampered saved state into a valid one. */
+export function hydrate(v: unknown): AppState {
+  const s = isObj(v) ? v : {}
+  return {
+    mode: s.mode === 'barcode' ? 'barcode' : 'payment',
+    payment: cleanPayment(s.payment),
+    barcode: cleanBarcode(s.barcode),
+  }
+}
 
 /**
  * State lives in the URL fragment (#s=…). Browsers never send the fragment to the
@@ -61,8 +97,19 @@ const MAX_HISTORY = 8
 
 export function loadHistory(): HistoryItem[] {
   try {
-    const items = JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]') as HistoryItem[]
-    return items.map((i) => ({ ...i, state: hydrate(i.state) }))
+    const items: unknown = JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]')
+    if (!Array.isArray(items)) return []
+    return items
+      .filter(isObj)
+      .slice(0, MAX_HISTORY)
+      .map((i) => ({
+        id: str(i.id, String(Math.random())),
+        ts: typeof i.ts === 'number' ? i.ts : 0,
+        label: str(i.label, ''),
+        // Only our own PNG thumbnails, never arbitrary URLs.
+        thumb: typeof i.thumb === 'string' && i.thumb.startsWith('data:image/png;base64,') ? i.thumb : '',
+        state: hydrate(i.state),
+      }))
   } catch {
     return []
   }
