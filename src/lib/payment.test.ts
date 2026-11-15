@@ -2,7 +2,6 @@ import { describe, expect, it } from 'vitest'
 import {
   buildPayment,
   compact,
-  defaultPayment,
   group4,
   timestamp,
   autoPurpose,
@@ -16,11 +15,12 @@ import {
   parseAmount,
   type PaymentData,
 } from './payment'
+import { samplePayment } from '../test/fixtures'
 
-const de = (p: Partial<PaymentData> = {}) => buildPayment({ ...defaultPayment, message: 'Rechnung 2026-042', ...p })
+const de = (p: Partial<PaymentData> = {}) => buildPayment({ ...samplePayment, message: 'Rechnung 2026-042', ...p })
 const ch = (p: Partial<PaymentData> = {}) =>
   buildPayment({
-    ...defaultPayment,
+    ...samplePayment,
     country: 'CH',
     currency: 'CHF',
     iban: 'CH93 0076 2011 6238 5295 7',
@@ -91,12 +91,12 @@ describe('EPC QR (DE/AT)', () => {
     expect(autoPurpose(new Date(2026, 10, 15, 14, 32, 7))).toBe('Rechnung 2026-11-15:14:32:07')
   })
   it('uses the automatic purpose only when the field is empty', () => {
-    expect(defaultPayment.message).toBe('')
-    expect(buildPayment(defaultPayment, 'Rechnung X').payload).toMatch(/\nRechnung X$/)
-    expect(buildPayment({ ...defaultPayment, message: 'Miete' }, 'Rechnung X').payload).toMatch(/\nMiete$/)
+    expect(samplePayment.message).toBe('')
+    expect(buildPayment(samplePayment, 'Rechnung X').payload).toMatch(/\nRechnung X$/)
+    expect(buildPayment({ ...samplePayment, message: 'Miete' }, 'Rechnung X').payload).toMatch(/\nMiete$/)
   })
   it('skips the automatic purpose when an RF reference is given', () => {
-    const r = buildPayment({ ...defaultPayment, reference: 'RF18539007547034' }, 'Rechnung X')
+    const r = buildPayment({ ...samplePayment, reference: 'RF18539007547034' }, 'Rechnung X')
     expect(r.errors).toEqual({})
     expect(r.payload).toMatch(/\nRF18539007547034$/)
   })

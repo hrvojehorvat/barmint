@@ -9,12 +9,13 @@ import { PNG } from 'pngjs'
 import { describe, expect, it } from 'vitest'
 import { SAMPLE_TEXT, defaultBarcode, type Format } from './barcode'
 import { barcodeOptions, paymentOptions } from './options'
-import { buildPayment, defaultPayment, type PaymentData } from './payment'
+import { buildPayment, type PaymentData } from './payment'
 import type { RenderOptions } from './render'
+import { samplePayment } from '../test/fixtures'
 
 /** Render with the exact options the app uses, then decode like a phone camera would. */
 async function scanPayment(p: Partial<PaymentData>) {
-  const result = buildPayment({ ...defaultPayment, ...p })
+  const result = buildPayment({ ...samplePayment, ...p })
   const opts = paymentOptions(result)!
   const png = PNG.sync.read(await bwipjs.toBuffer({ ...opts, scale: 4 } as RenderOptions))
   return { payload: result.payload, decoded: jsQR(new Uint8ClampedArray(png.data), png.width, png.height)?.data }
@@ -41,7 +42,7 @@ describe('scannable output', () => {
     expect(jsQR(new Uint8ClampedArray(png.data), png.width, png.height)?.data).toBe('https://barmint.app/?ä=1')
   })
   it('payment PNGs have an opaque white background', async () => {
-    const opts = paymentOptions(buildPayment(defaultPayment))!
+    const opts = paymentOptions(buildPayment(samplePayment))!
     const png = PNG.sync.read(await bwipjs.toBuffer(opts))
     expect([...png.data.subarray(0, 4)]).toEqual([255, 255, 255, 255])
   })

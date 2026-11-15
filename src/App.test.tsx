@@ -2,6 +2,9 @@ import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import App from './App'
+import { SAMPLE_IBAN, type PaymentData } from './lib/payment'
+import { defaultState, writeUrlState } from './lib/storage'
+import { samplePayment, sampleSwiss } from './test/fixtures'
 
 // jsdom has no canvas; rendering itself is covered by scan.test.ts.
 vi.mock('./lib/render', async (orig) => ({
@@ -11,6 +14,8 @@ vi.mock('./lib/render', async (orig) => ({
 
 const field = (name: RegExp) => screen.getByRole('textbox', { name })
 const png = () => screen.getByRole('button', { name: /png/i })
+/** Start from a filled-in form, as if opened from a shared link. */
+const seed = (payment: PaymentData = samplePayment) => writeUrlState({ ...defaultState, payment })
 
 beforeEach(() => localStorage.setItem('lang', 'en'))
 
@@ -28,8 +33,23 @@ describe('BarMint app', () => {
     expect(field(/^Amount/)).not.toHaveAttribute('aria-required')
   })
 
-  it('renders a valid sample and enables export', () => {
+  it('starts empty, with example values only as placeholders', () => {
     render(<App />)
+    expect(field(/^Name/)).toHaveValue('')
+    expect(field(/^Name/)).toHaveAttribute('placeholder', 'Max Mustermann')
+    expect(field(/^IBAN/)).toHaveValue('')
+    expect(field(/^IBAN/)).toHaveAttribute('placeholder', SAMPLE_IBAN.DE)
+    expect(field(/^Amount/)).toHaveValue('')
+    expect(screen.getByText(/Fill in the required fields/)).toBeInTheDocument()
+    expect(screen.queryByText('Required')).toBeNull()
+    expect(png()).toBeDisabled()
+  })
+
+  it('enables export once name and IBAN are filled in', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+    await user.type(field(/^Name/), 'Max Mustermann')
+    await user.type(field(/^IBAN/), SAMPLE_IBAN.DE)
     expect(png()).toBeEnabled()
   })
 
@@ -58,9 +78,13 @@ describe('BarMint app', () => {
     const user = userEvent.setup()
     render(<App />)
     await user.click(screen.getByRole('button', { name: /Switzerland/ }))
-    expect(field(/^IBAN/)).toHaveValue('CH93 0076 2011 6238 5295 7')
+    expect(field(/^IBAN/)).toHaveAttribute('placeholder', SAMPLE_IBAN.CH)
     expect(screen.queryByRole('textbox', { name: /^BIC/ })).not.toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'CHF' })).toBeInTheDocument()
+    await user.type(field(/^Name/), 'Max Mustermann')
+    await user.type(field(/^IBAN/), SAMPLE_IBAN.CH)
+    await user.type(field(/^Postcode/), '8001')
+    await user.type(field(/^City/), 'Zürich')
     expect(png()).toBeEnabled()
     // payer block is collapsed by default
     const payer = screen.getByRole('button', { name: /Payer \(optional\)/ })
@@ -82,8 +106,8 @@ describe('BarMint app', () => {
 
   it('makes the reference required for a QR-IBAN', async () => {
     const user = userEvent.setup()
+    seed(sampleSwiss)
     render(<App />)
-    await user.click(screen.getByRole('button', { name: /Switzerland/ }))
     const iban = field(/^IBAN/)
     await user.clear(iban)
     await user.type(iban, 'CH4431999123000889012')
@@ -110,8 +134,8 @@ describe('BarMint app', () => {
     await user.click(screen.getByRole('button', { name: 'EAN-13' }))
     const content = field(/^Content/)
     expect(content).toHaveAttribute('aria-required', 'true')
-    expect(content).toHaveValue('4006381333931')
-    await user.clear(content)
+    expect(content).toHaveValue('')
+    expect(content).toHaveAttribute('placeholder', '4006381333931')
     await user.type(content, '12345')
     expect(screen.getByText('Needs 12/13 digits')).toBeInTheDocument()
     expect(png()).toBeDisabled()
@@ -132,6 +156,7 @@ describe('BarMint app', () => {
     HTMLCanvasElement.prototype.toDataURL = () => 'data:image/png;base64,'
     HTMLCanvasElement.prototype.getContext = (() => ({ drawImage() {} })) as never
     HTMLAnchorElement.prototype.click = vi.fn()
+    seed()
     render(<App />)
     await user.click(png())
     const recent = screen.getByRole('heading', { name: 'Recent' }).closest('div')!.parentElement!

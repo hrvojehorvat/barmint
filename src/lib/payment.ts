@@ -49,6 +49,7 @@ export interface FieldError {
 
 export type Errors<T> = Partial<Record<keyof T, FieldError>>
 
+/** Example IBANs, shown as input placeholders only. */
 export const SAMPLE_IBAN: Record<Country, string> = {
   DE: 'DE89 3704 0044 0532 0130 00',
   AT: 'AT61 1904 3002 3457 3201',
@@ -63,17 +64,17 @@ export function timestamp(d = new Date()): string {
 
 export const defaultPayment: PaymentData = {
   country: 'DE',
-  name: 'Max Mustermann',
-  iban: SAMPLE_IBAN.DE,
+  name: '',
+  iban: '',
   bic: '',
-  amount: '49,90',
+  amount: '',
   currency: 'EUR',
   reference: '',
   message: '',
-  street: 'Bahnhofstrasse',
-  houseNo: '1',
-  zip: '8001',
-  city: 'Zürich',
+  street: '',
+  houseNo: '',
+  zip: '',
+  city: '',
   dName: '',
   dStreet: '',
   dHouseNo: '',

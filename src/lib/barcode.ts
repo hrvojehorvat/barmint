@@ -10,6 +10,7 @@ export const FORMATS: { id: Format; label: string; digits?: [number, number] }[]
   { id: 'qrcode', label: 'QR' },
 ]
 
+/** Example content per format, shown as the input placeholder. */
 export const SAMPLE_TEXT: Record<Format, string> = {
   code128: 'ABC-12345',
   ean13: '4006381333931',
@@ -29,7 +30,7 @@ export interface BarcodeData {
 
 export const defaultBarcode: BarcodeData = {
   format: 'code128',
-  text: SAMPLE_TEXT.code128,
+  text: '',
   fg: '#000000',
   bg: '#ffffff',
   scale: 4,

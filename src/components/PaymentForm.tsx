@@ -27,10 +27,7 @@ export function PaymentForm({ data, errors, onChange, autoPurpose, t }: Props) {
 
   const pickCountry = (c: Country) => {
     const currency = c !== 'CH' ? 'EUR' : data.country === 'CH' ? data.currency : 'CHF'
-    // Swap in the sample IBAN for the new country if the user hasn't entered their own yet.
-    const cur = group4(data.iban)
-    const iban = !cur || Object.values(SAMPLE_IBAN).includes(cur) ? SAMPLE_IBAN[c] : data.iban
-    onChange({ ...data, country: c, currency, iban })
+    onChange({ ...data, country: c, currency })
   }
 
   const qrIban = swiss && /^(CH|LI)\d{2}3[01]/.test(data.iban.replace(/\s/g, '').toUpperCase())
@@ -83,7 +80,7 @@ export function PaymentForm({ data, errors, onChange, autoPurpose, t }: Props) {
       <div>
         <SectionTitle>{t.sections.recipient}</SectionTitle>
         <div className="grid grid-cols-6 gap-x-3 gap-y-1">
-          <Field {...f('name')} required className="col-span-6" autoComplete="organization" />
+          <Field {...f('name')} required className="col-span-6" autoComplete="organization" placeholder="Max Mustermann" />
           <Field
             {...f('iban')}
             required
@@ -91,7 +88,7 @@ export function PaymentForm({ data, errors, onChange, autoPurpose, t }: Props) {
             className={swiss ? 'col-span-6' : 'col-span-6 sm:col-span-4'}
             mono
             spellCheck={false}
-            placeholder="DE00 0000 0000 0000 0000 00"
+            placeholder={SAMPLE_IBAN[data.country]}
           />
           {!swiss && (
             <Field
@@ -105,10 +102,10 @@ export function PaymentForm({ data, errors, onChange, autoPurpose, t }: Props) {
           )}
           {swiss && (
             <>
-              <Field {...f('street')} className="col-span-4" autoComplete="address-line1" />
-              <Field {...f('houseNo')} className="col-span-2" />
-              <Field {...f('zip')} required className="col-span-2" autoComplete="postal-code" />
-              <Field {...f('city')} required className="col-span-4" autoComplete="address-level2" />
+              <Field {...f('street')} className="col-span-4" autoComplete="address-line1" placeholder="Bahnhofstrasse" />
+              <Field {...f('houseNo')} className="col-span-2" placeholder="1" />
+              <Field {...f('zip')} required className="col-span-2" autoComplete="postal-code" placeholder="8001" />
+              <Field {...f('city')} required className="col-span-4" autoComplete="address-level2" placeholder="Zürich" />
             </>
           )}
         </div>
@@ -117,7 +114,7 @@ export function PaymentForm({ data, errors, onChange, autoPurpose, t }: Props) {
       <div>
         <SectionTitle>{t.sections.payment}</SectionTitle>
         <div className="grid grid-cols-6 gap-x-3 gap-y-1">
-          <Field {...f('amount')} className="col-span-4" inputMode="decimal" placeholder="0,00" hint={t.hints.amount} />
+          <Field {...f('amount')} className="col-span-4" inputMode="decimal" placeholder="49,90" hint={t.hints.amount} />
           <div className="col-span-2">
             <span className="block text-[13px] font-medium text-neutral-600 dark:text-neutral-300 mb-1.5 ml-1">
               {t.f.currency}

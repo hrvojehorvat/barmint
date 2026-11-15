@@ -14,9 +14,9 @@ export function BarcodeForm({ data, errors, onChange, t }: Props) {
   const set = <K extends keyof BarcodeData>(k: K, v: BarcodeData[K]) => onChange({ ...data, [k]: v })
 
   const pickFormat = (format: Format) => {
-    // Keep the user's text unless it was a sample from another format.
-    const isSample = Object.values(SAMPLE_TEXT).includes(data.text) || !data.text
-    onChange({ ...data, format, text: isSample ? SAMPLE_TEXT[format] : data.text })
+    // Keep the user's text; drop it only if it is an example value (e.g. from an older saved link).
+    const isSample = Object.values(SAMPLE_TEXT).includes(data.text)
+    onChange({ ...data, format, text: isSample ? '' : data.text })
   }
 
   return (
@@ -51,6 +51,7 @@ export function BarcodeForm({ data, errors, onChange, t }: Props) {
         t={t}
         mono
         spellCheck={false}
+        placeholder={SAMPLE_TEXT[data.format]}
         inputMode={FORMATS.find((f) => f.id === data.format)?.digits ? 'numeric' : 'text'}
       />
 
