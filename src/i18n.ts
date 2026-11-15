@@ -73,6 +73,8 @@ const en = {
     refOrMessage: 'Use either a reference or a purpose, not both',
     countryInvalid: 'Use a 2-letter code, e.g. CH',
     digits: 'Needs {n} digits',
+    charInvalid: 'Not allowed in payment codes: {n}',
+    payloadTooLong: 'Too long for the code. Shorten by {n} characters',
   } satisfies Record<ErrKey, string>,
   renderError: 'Could not render',
 }
@@ -150,6 +152,8 @@ const de: Dict = {
     refOrMessage: 'Entweder Referenz oder Verwendungszweck, nicht beides',
     countryInvalid: 'Zweistelliger Code, z. B. CH',
     digits: 'Benötigt {n} Ziffern',
+    charInvalid: 'In Zahlungscodes nicht erlaubt: {n}',
+    payloadTooLong: 'Zu lang für den Code. Um {n} Zeichen kürzen',
   },
   renderError: 'Darstellung nicht möglich',
 }

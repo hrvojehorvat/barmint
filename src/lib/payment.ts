@@ -39,6 +39,8 @@ export type ErrKey =
   | 'refOrMessage'
   | 'countryInvalid'
   | 'digits'
+  | 'charInvalid'
+  | 'payloadTooLong'
 
 export interface FieldError {
   key: ErrKey
@@ -125,6 +127,27 @@ export function parseAmount(raw: string): number | null | undefined {
   return Number(s)
 }
 
+/**
+ * Characters allowed in payment codes: the Swiss QR-bill set (Implementation Guidelines 2.3),
+ * i.e. Basic Latin, Latin-1, Latin Extended-A, Ș ș Ț ț and €. It covers German, French, Italian
+ * and Croatian names. EPC banks accept the same Latin letters (umlauts included). Emoji,
+ * non-Latin scripts, control characters and line breaks are rejected; a line break would
+ * also break the line-based payload.
+ */
+const DISALLOWED = /[^\x20-\x7E\xA0-\u017F\u0218-\u021B\u20AC]/gu
+
+/** Distinct disallowed characters in `s`, e.g. "😀 ✓". Empty if all are fine. */
+export function badChars(s: string): string {
+  return [...new Set(s.match(DISALLOWED) ?? [])]
+    .slice(0, 3)
+    .map((c) => (/\p{Cc}/u.test(c) ? `U+${c.codePointAt(0)!.toString(16).toUpperCase().padStart(4, '0')}` : c))
+    .join(' ')
+}
+
+/** EPC069-12: the whole payload must not exceed 331 bytes (UTF-8). */
+export const EPC_MAX_BYTES = 331
+const byteLength = (s: string) => new TextEncoder().encode(s).length
+
 export interface PaymentResult {
   payload: string | null
   errors: Errors<PaymentData>
@@ -140,14 +163,16 @@ export function buildPayment(p: PaymentData, fallbackMessage = ''): PaymentResul
   const swiss = p.country === 'CH'
   const t = (v: string) => v.trim()
 
-  const need = (k: keyof PaymentData, max: number) => {
+  const check = (k: keyof PaymentData, max: number, required: boolean) => {
     const v = t(p[k] as string)
-    if (!v) errors[k] = { key: 'required' }
+    const bad = badChars(v)
+    if (!v) {
+      if (required) errors[k] = { key: 'required' }
+    } else if (bad) errors[k] = { key: 'charInvalid', n: bad }
     else if (v.length > max) errors[k] = { key: 'tooLong', n: max }
   }
-  const opt = (k: keyof PaymentData, max: number) => {
-    if (t(p[k] as string).length > max) errors[k] = { key: 'tooLong', n: max }
-  }
+  const need = (k: keyof PaymentData, max: number) => check(k, max, true)
+  const opt = (k: keyof PaymentData, max: number) => check(k, max, false)
 
   need('name', 70)
 
@@ -186,7 +211,14 @@ export function buildPayment(p: PaymentData, fallbackMessage = ''): PaymentResul
       ref,
       ref ? '' : message,
     ]
-    return { payload: lines.join('\n').trimEnd(), errors, standard: 'epc' }
+    const payload = lines.join('\n').trimEnd()
+    const over = byteLength(payload) - EPC_MAX_BYTES
+    if (over > 0) {
+      // Only a long purpose can push it over (other fields are short); umlauts count as 2 bytes.
+      errors.message = { key: 'payloadTooLong', n: over }
+      return { payload: null, errors, standard: 'epc' }
+    }
+    return { payload, errors, standard: 'epc' }
   }
 
   // Swiss QR-bill (SPC 0200)

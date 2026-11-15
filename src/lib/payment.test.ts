@@ -6,6 +6,8 @@ import {
   group4,
   timestamp,
   autoPurpose,
+  badChars,
+  EPC_MAX_BYTES,
   isBic,
   isIban,
   isQrIban,
@@ -174,3 +176,55 @@ describe('Swiss QR-bill (CH)', () => {
     expect(r.errors.dCountry?.key).toBe('countryInvalid')
   })
 })
+
+describe('allowed characters', () => {
+  it('accepts DACH and Croatian names, accents and €', () => {
+    expect(badChars('Jürgen Müller-Straße, Café Zoë, Đurđa Čačić, Ștefan, 5 €')).toBe('')
+  })
+  it('lists the offending characters', () => {
+    expect(badChars('Pizza 🍕 Ω 😀 🍕')).toBe('🍕 Ω 😀')
+    expect(badChars('a\nb\tc')).toBe('U+000A U+0009')
+  })
+  it('rejects emoji and non-Latin scripts in EPC fields', () => {
+    expect(de({ name: 'Max 😀' }).errors.name).toEqual({ key: 'charInvalid', n: '😀' })
+    expect(de({ message: 'Счёт 1' }).errors.message?.key).toBe('charInvalid')
+    expect(de({ message: 'Счёт 1' }).payload).toBeNull()
+  })
+  it('rejects line breaks that would break the payload structure', () => {
+    expect(de({ name: 'Max\nEvil' }).errors.name?.key).toBe('charInvalid')
+    expect(ch({ city: 'Zürich\nX' }).errors.city?.key).toBe('charInvalid')
+  })
+  it('checks the Swiss creditor and payer fields', () => {
+    expect(ch({ street: '★ Weg' }).errors.street?.key).toBe('charInvalid')
+    expect(ch({ dName: 'Anna 🙂', dZip: '3000', dCity: 'Bern' }).errors.dName?.key).toBe('charInvalid')
+    expect(ch({ name: 'Zoë Müller' }).payload).toContain('Zoë Müller')
+  })
+  it('still reports "required" before character problems', () => {
+    expect(de({ name: '   ' }).errors.name?.key).toBe('required')
+  })
+})
+
+describe('EPC size limit', () => {
+  const full = {
+    name: 'x'.repeat(70),
+    bic: 'COBADEFFXXX',
+    amount: '999999999,99',
+    iban: 'DE89 3704 0044 0532 0130 00',
+  }
+  it('accepts the longest ASCII payload', () => {
+    const r = de({ ...full, message: 'a'.repeat(140) })
+    expect(r.payload).not.toBeNull()
+    expect(new TextEncoder().encode(r.payload!).length).toBeLessThanOrEqual(EPC_MAX_BYTES)
+  })
+  it('rejects a payload over 331 bytes and says how much to cut', () => {
+    const r = de({ ...full, message: 'ä'.repeat(140) }) // umlauts are 2 bytes each
+    expect(r.payload).toBeNull()
+    expect(r.errors.message?.key).toBe('payloadTooLong')
+    // BCD 002 1 SCT + BIC + name + IBAN + EUR999999999.99 + 280-byte text + 10 line breaks
+    const bytes = 3 + 3 + 1 + 3 + 11 + 70 + 22 + 15 + 280 + 10
+    expect(r.errors.message?.n).toBe(bytes - EPC_MAX_BYTES)
+    const cut = Number(r.errors.message!.n)
+    expect(de({ ...full, message: 'ä'.repeat(140 - cut) }).payload).not.toBeNull()
+  })
+})
+
