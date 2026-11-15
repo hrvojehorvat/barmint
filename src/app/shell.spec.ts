@@ -4,6 +4,7 @@ import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
 import { CANVAS_RENDERER } from './canvas-renderer'
 import { RecoveringErrorHandler } from './recovery'
+import { appConfig } from './app.config'
 import { Shell } from './shell'
 
 describe('Shell', () => {
@@ -26,5 +27,14 @@ describe('Shell', () => {
     expect(location.hash).not.toContain('boom')
     expect(screen.getByRole('textbox', { name: /^Name/ })).toHaveValue('')
     vi.restoreAllMocks()
+  })
+  it('keeps the app running on harmless global browser errors', async () => {
+    const view = await render(Shell, {
+      providers: [...appConfig.providers, { provide: CANVAS_RENDERER, useValue: () => {} }],
+    })
+    window.dispatchEvent(new ErrorEvent('error', { message: 'ResizeObserver loop completed with undelivered notifications' }))
+    await view.fixture.whenStable()
+    expect(screen.queryByRole('alert')).toBeNull()
+    expect(screen.getByText('Mint')).toBeInTheDocument()
   })
 })
