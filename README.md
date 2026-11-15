@@ -9,14 +9,19 @@ Client-side generator for payment codes and barcodes for the DACH region. Runs e
 
 ## Development
 
+Needs Node 24 (see `.nvmrc`; with nvm: `nvm use`).
+
 ```bash
 npm install
-npm run dev        # dev server (add -- --host to test on a phone on the same Wi-Fi)
-npm test           # unit, scan (encode → decode) and UI tests
-npm run build      # static bundle in dist/
+npm run dev        # dev server on :5173 (add -- --host to test on a phone on the same Wi-Fi)
+npm test           # lib unit + scan tests (vitest), then component tests (ng test)
+npm run build      # static bundle in dist/, then fills %SITE_URL% (from SITE_URL or .env)
+npm run preview    # serve dist/ on :4173
 ```
 
-Stack: React 19, TypeScript, Vite, Tailwind CSS, bwip-js, lucide-react.
+Stack: Angular 22 (standalone, zoneless, signals), TypeScript, Tailwind CSS, bwip-js, Lucide.
+Framework-free logic (payment codes, validation, storage, rendering) lives in `src/lib/`;
+Angular components live in `src/app/`. The last React version is tagged `react-v1`.
 
 ## Deployment
 

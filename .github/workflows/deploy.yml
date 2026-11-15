@@ -19,7 +19,7 @@ jobs:
 
       - uses: actions/setup-node@v7
         with:
-          node-version: 22
+          node-version-file: .nvmrc
           cache: npm
 
       - run: npm ci
@@ -27,7 +27,7 @@ jobs:
       - run: npm run build
         env:
           # Absolute URL for link previews; set under Settings → Secrets and variables → Actions → Variables.
-          VITE_SITE_URL: ${{ vars.VITE_SITE_URL }}
+          SITE_URL: ${{ vars.VITE_SITE_URL }}
 
       # Uploads the already-built dist/ folder; Azure does not build anything itself.
       # Skipped until the token secret exists, so pushes before the Azure setup still run tests + build.

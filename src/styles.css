@@ -1,5 +1,8 @@
 @import 'tailwindcss';
 
+/* Tailwind scans the Angular templates and components. */
+@source './app';
+
 @theme {
   --color-mint-50: #effcf7;
   --color-mint-100: #d6f7ea;
@@ -31,4 +34,9 @@
 body {
   @apply bg-[#f3faf7] dark:bg-black font-sans antialiased;
   -webkit-font-smoothing: antialiased;
+}
+
+/* Angular hosts are inline by default; make layout hosts behave like the divs they replace. */
+app-root {
+  display: block;
 }

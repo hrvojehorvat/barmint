@@ -25,3 +25,8 @@ dist-ssr
 
 # Local AI assistant instructions
 CLAUDE.md
+
+# Angular
+/.angular/cache
+/out-tsc
+/coverage

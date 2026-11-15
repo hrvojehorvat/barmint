@@ -3,38 +3,51 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "engines": {
+    "node": ">=22.22.3"
+  },
   "scripts": {
-    "dev": "vite",
-    "build": "tsc -b && vite build",
+    "ng": "ng",
+    "dev": "ng serve",
+    "start": "ng serve",
+    "build": "ng build && node scripts/site-url.mjs",
+    "preview": "npx --yes serve dist -l 4173",
     "lint": "oxlint",
-    "preview": "vite preview",
-    "test": "vitest run",
-    "test:watch": "vitest"
+    "test": "npm run test:lib && npm run test:app",
+    "test:lib": "vitest run",
+    "test:app": "ng test --watch=false",
+    "test:watch": "ng test"
   },
   "dependencies": {
+    "@angular/common": "^22.2.0",
+    "@angular/compiler": "^22.2.0",
+    "@angular/core": "^22.2.0",
+    "@angular/platform-browser": "^22.2.0",
     "@fontsource-variable/inter": "^5.3.0",
+    "@lucide/angular": "^1.73.0",
     "bwip-js": "^4.11.4",
-    "lucide-react": "^1.73.0",
-    "react": "^19.3.1",
-    "react-dom": "^19.3.1"
+    "rxjs": "~7.8.0",
+    "tslib": "^2.3.0"
   },
   "devDependencies": {
-    "@tailwindcss/vite": "^4.3.5",
+    "@angular/build": "^22.2.7",
+    "@angular/cli": "^22.2.7",
+    "@angular/compiler-cli": "^22.2.0",
+    "@angular/router": "^22.2.0",
+    "@tailwindcss/postcss": "^4.3.5",
+    "@testing-library/angular": "^19.6.0",
+    "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.9.1",
-    "@testing-library/react": "^16.3.3",
     "@testing-library/user-event": "^14.6.10",
     "@types/node": "^24.19.2",
     "@types/pngjs": "^6.0.5",
-    "@types/react": "^19.3.0",
-    "@types/react-dom": "^19.3.0",
-    "@vitejs/plugin-react": "^6.1.2",
-    "jsdom": "^29.1.1",
+    "jsdom": "^30.0.0",
     "jsqr": "^1.4.0",
     "oxlint": "^1.90.0",
     "pngjs": "^7.0.0",
+    "postcss": "^8.5.3",
     "tailwindcss": "^4.3.5",
-    "typescript": "~7.0.2",
-    "vite": "^8.3.6",
-    "vitest": "^4.1.12"
+    "typescript": "~6.0.2",
+    "vitest": "^5.0.0"
   }
 }

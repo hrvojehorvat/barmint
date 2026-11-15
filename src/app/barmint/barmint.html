@@ -1,0 +1,116 @@
+@let tr = t();
+@let s = state();
+
+<!-- ambient background -->
+<div aria-hidden="true" class="pointer-events-none fixed inset-0 -z-10">
+  <div
+    class="absolute -top-40 left-1/2 h-[600px] w-[900px] -translate-x-1/2 rounded-full bg-gradient-to-br from-mint-300/45 via-teal-200/25 to-transparent dark:from-mint-500/25 dark:via-teal-500/10 blur-3xl"
+  ></div>
+  <div
+    class="absolute bottom-0 right-0 h-[400px] w-[500px] rounded-full bg-gradient-to-tl from-mint-200/50 to-transparent dark:from-mint-500/10 blur-3xl"
+  ></div>
+</div>
+
+<header
+  class="sticky top-0 z-20 border-b border-black/5 dark:border-white/10 bg-white/70 dark:bg-black/50 backdrop-blur-2xl"
+>
+  <div class="mx-auto flex h-14 max-w-6xl items-center justify-between px-4 sm:px-6">
+    <div class="flex items-center gap-2.5">
+      <span
+        class="relative flex h-8 w-8 items-center justify-center rounded-[10px] bg-gradient-to-br from-mint-300 to-mint-600 text-white shadow-[0_4px_14px_-4px_rgba(31,174,136,0.7)]"
+      >
+        <svg lucideScanBarcode class="h-4.5 w-4.5"></svg>
+        <span
+          class="absolute -top-1.5 -right-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-white dark:bg-neutral-900 ring-1 ring-mint-200 dark:ring-mint-700"
+        >
+          <svg lucideLeaf class="h-2.5 w-2.5 text-mint-500" [strokeWidth]="2.5"></svg>
+        </span>
+      </span>
+      <span class="text-[17px] font-semibold tracking-tight text-neutral-900 dark:text-white">
+        Bar<span class="text-mint-500">Mint</span>
+      </span>
+    </div>
+    <div class="flex items-center gap-2">
+      <button
+        type="button"
+        (click)="copyLink()"
+        [attr.aria-label]="tr.share"
+        class="inline-flex items-center gap-1.5 rounded-full px-2.5 sm:px-3 py-1.5 text-xs font-medium text-neutral-600 dark:text-neutral-300 hover:bg-black/5 dark:hover:bg-white/10"
+      >
+        @switch (linkCopied()) {
+          @case ('ok') {
+            <svg lucideCheck class="h-3.5 w-3.5 text-mint-500"></svg>
+          }
+          @case ('fail') {
+            <svg lucideX class="h-3.5 w-3.5 text-red-500"></svg>
+          }
+          @default {
+            <svg lucideLink2 class="h-3.5 w-3.5"></svg>
+          }
+        }
+        <span class="hidden sm:inline" aria-live="polite">
+          {{ linkCopied() === 'ok' ? tr.linkCopied : linkCopied() === 'fail' ? tr.copyFailed : tr.share }}
+        </span>
+      </button>
+      <app-segmented size="sm" [value]="lang()" [options]="langs" (changed)="lang.set($event)" />
+    </div>
+  </div>
+</header>
+
+<main class="mx-auto max-w-6xl px-4 sm:px-6 pb-16">
+  @if (page(); as p) {
+    <app-legal [page]="p" [lang]="lang()" (back)="leaveLegal()" />
+  } @else {
+    <section class="pt-14 pb-10 text-center">
+      <h1 class="text-4xl sm:text-6xl font-semibold tracking-[-0.03em] text-neutral-900 dark:text-white">
+        {{ tr.heroTitle }}
+        <br />
+        <span class="bg-gradient-to-r from-mint-600 via-mint-400 to-teal-400 bg-clip-text text-transparent">
+          {{ tr.heroAccent }}
+        </span>
+      </h1>
+      <p class="mx-auto mt-5 max-w-2xl text-base sm:text-lg text-neutral-500 dark:text-neutral-400 leading-relaxed">
+        {{ tr.heroSub }}
+      </p>
+      <div class="mt-8">
+        <app-segmented [value]="s.mode" [options]="modes()" (changed)="setMode($event)" />
+      </div>
+    </section>
+
+    <div class="grid gap-6 lg:grid-cols-[1fr_400px] items-start">
+      <div appCard class="p-6 sm:p-8">
+        @if (s.mode === 'payment') {
+          <app-payment-form
+            [data]="s.payment"
+            [errors]="pay().errors"
+            [autoPurpose]="purpose"
+            [t]="tr"
+            (changed)="setPayment($event)"
+          />
+        } @else {
+          <app-barcode-form [data]="s.barcode" [errors]="barcodeErrors()" [t]="tr" (changed)="setBarcode($event)" />
+        }
+      </div>
+
+      <div class="space-y-6 lg:sticky lg:top-20">
+        <app-preview
+          [opts]="opts()"
+          [filename]="filename()"
+          [caption]="s.mode === 'payment' ? tr.standards[s.payment.country] : undefined"
+          [note]="s.mode === 'payment' && pay().standard === 'swiss' ? tr.swissNote : undefined"
+          [t]="tr"
+          (exported)="addHistory($event)"
+        />
+        <app-history [items]="history()" [t]="tr" (picked)="state.set($event.state)" (cleared)="history.set([])" />
+      </div>
+    </div>
+  }
+
+  <footer class="mt-16 flex flex-col items-center gap-3 text-xs text-neutral-400">
+    <span class="flex items-center gap-2"> <svg lucideLock class="h-3.5 w-3.5"></svg> {{ tr.footer }} </span>
+    <nav class="flex gap-4">
+      <a href="#impressum" class="hover:text-mint-600">{{ tr.legal.impressum }}</a>
+      <a href="#datenschutz" class="hover:text-mint-600">{{ tr.legal.privacy }}</a>
+    </nav>
+  </footer>
+</main>

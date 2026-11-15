@@ -1,9 +1,10 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>BarMint · GiroCode, EPC QR & Swiss QR-bill generator</title>
+    <base href="/" />
     <meta
       name="description"
       content="Create GiroCodes, EPC QR codes and Swiss QR-bills for Germany, Austria and Switzerland, plus classic barcodes. Runs fully in your browser."
@@ -13,7 +14,7 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 
-    <!-- Link previews. Set VITE_SITE_URL in .env so the image URL is absolute. -->
+    <!-- Link previews. %SITE_URL% is filled in after the build by scripts/site-url.mjs. -->
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="BarMint" />
     <meta property="og:title" content="BarMint · Payment codes for DE, AT & CH" />
@@ -21,15 +22,14 @@
       property="og:description"
       content="GiroCode, EPC QR and Swiss QR-bill generator. Runs fully in your browser. Nothing is uploaded."
     />
-    <meta property="og:url" content="%VITE_SITE_URL%/" />
-    <meta property="og:image" content="%VITE_SITE_URL%/og-image.png" />
+    <meta property="og:url" content="%SITE_URL%/" />
+    <meta property="og:image" content="%SITE_URL%/og-image.png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:image:alt" content="BarMint logo next to a sample payment QR code" />
     <meta name="twitter:card" content="summary_large_image" />
   </head>
   <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
+    <app-root></app-root>
   </body>
 </html>
