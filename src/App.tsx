@@ -1,7 +1,8 @@
 import { Check, Leaf, Link2, Lock, ScanBarcode } from 'lucide-react'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { BarcodeForm } from './components/BarcodeForm'
 import { History } from './components/History'
+import { Legal, legalPageFromHash, type LegalPage } from './components/Legal'
 import { PaymentForm } from './components/PaymentForm'
 import { Preview } from './components/Preview'
 import { Card, Segmented } from './components/ui'
@@ -26,6 +27,14 @@ export default function App() {
   const [state, setState] = useState<AppState>(readUrlState)
   const [history, setHistory] = useState<HistoryItem[]>(loadHistory)
   const [linkCopied, setLinkCopied] = useState(false)
+  const [page, setPage] = useState<LegalPage | null>(() => legalPageFromHash(location.hash))
+  // True once the user navigated to a legal page from within the app, so "back" stays on BarMint.
+  const navigatedInApp = useRef(false)
+  const leaveLegal = () => {
+    if (navigatedInApp.current) return window.history.back()
+    window.history.replaceState(null, '', location.pathname)
+    setPage(null)
+  }
   const t = dicts[lang]
   const { mode, payment, barcode } = state
 
@@ -38,10 +47,19 @@ export default function App() {
     }
   }, [lang])
 
-  useEffect(() => writeUrlState(state), [state])
+  // On a legal page the fragment is #impressum / #datenschutz; the form state is restored on "back".
+  useEffect(() => {
+    if (!page) writeUrlState(state)
+  }, [state, page])
   // Pasting another BarMint link into the same tab only changes the #fragment (no reload).
   useEffect(() => {
-    const onHash = () => setState(readUrlState())
+    const onHash = () => {
+      const p = legalPageFromHash(location.hash)
+      if (p) navigatedInApp.current = true
+      setPage(p)
+      if (!p) setState(readUrlState())
+      window.scrollTo(0, 0)
+    }
     window.addEventListener('hashchange', onHash)
     return () => window.removeEventListener('hashchange', onHash)
   }, [])
@@ -69,7 +87,10 @@ export default function App() {
       ? pay.standard === 'swiss'
         ? 'swiss-qr-bill'
         : 'girocode'
-      : `${barcode.format}-${barcode.text.trim().replace(/[^\w-]+/g, '_').slice(0, 40)}`
+      : `${barcode.format}-${barcode.text
+          .trim()
+          .replace(/[^\w-]+/g, '_')
+          .slice(0, 40)}`
 
   const setMode = (m: Mode) => setState((s) => ({ ...s, mode: m }))
 
@@ -121,68 +142,87 @@ export default function App() {
       </header>
 
       <main className="mx-auto max-w-6xl px-4 sm:px-6 pb-16">
-        <section className="pt-14 pb-10 text-center">
-          <h1 className="text-4xl sm:text-6xl font-semibold tracking-[-0.03em] text-neutral-900 dark:text-white">
-            {t.heroTitle}
-            <br />
-            <span className="bg-gradient-to-r from-mint-600 via-mint-400 to-teal-400 bg-clip-text text-transparent">
-              {t.heroAccent}
-            </span>
-          </h1>
-          <p className="mx-auto mt-5 max-w-2xl text-base sm:text-lg text-neutral-500 dark:text-neutral-400 leading-relaxed">
-            {t.heroSub}
-          </p>
-          <div className="mt-8">
-            <Segmented
-              value={mode}
-              onChange={setMode}
-              options={[
-                { value: 'payment', label: t.modes.payment },
-                { value: 'barcode', label: t.modes.barcode },
-              ]}
-            />
-          </div>
-        </section>
+        {page ? (
+          <Legal page={page} lang={lang} onBack={leaveLegal} />
+        ) : (
+          <>
+            <section className="pt-14 pb-10 text-center">
+              <h1 className="text-4xl sm:text-6xl font-semibold tracking-[-0.03em] text-neutral-900 dark:text-white">
+                {t.heroTitle}
+                <br />
+                <span className="bg-gradient-to-r from-mint-600 via-mint-400 to-teal-400 bg-clip-text text-transparent">
+                  {t.heroAccent}
+                </span>
+              </h1>
+              <p className="mx-auto mt-5 max-w-2xl text-base sm:text-lg text-neutral-500 dark:text-neutral-400 leading-relaxed">
+                {t.heroSub}
+              </p>
+              <div className="mt-8">
+                <Segmented
+                  value={mode}
+                  onChange={setMode}
+                  options={[
+                    { value: 'payment', label: t.modes.payment },
+                    { value: 'barcode', label: t.modes.barcode },
+                  ]}
+                />
+              </div>
+            </section>
 
-        <div className="grid gap-6 lg:grid-cols-[1fr_400px] items-start">
-          <Card className="p-6 sm:p-8">
-            {mode === 'payment' ? (
-              <PaymentForm
-                data={payment}
-                errors={pay.errors}
-                autoPurpose={purpose}
-                onChange={(p) => setState((s) => ({ ...s, payment: p }))}
-                t={t}
-              />
-            ) : (
-              <BarcodeForm
-                data={barcode}
-                errors={barcodeErrors}
-                onChange={(b) => setState((s) => ({ ...s, barcode: b }))}
-                t={t}
-              />
-            )}
-          </Card>
+            <div className="grid gap-6 lg:grid-cols-[1fr_400px] items-start">
+              <Card className="p-6 sm:p-8">
+                {mode === 'payment' ? (
+                  <PaymentForm
+                    data={payment}
+                    errors={pay.errors}
+                    autoPurpose={purpose}
+                    onChange={(p) => setState((s) => ({ ...s, payment: p }))}
+                    t={t}
+                  />
+                ) : (
+                  <BarcodeForm
+                    data={barcode}
+                    errors={barcodeErrors}
+                    onChange={(b) => setState((s) => ({ ...s, barcode: b }))}
+                    t={t}
+                  />
+                )}
+              </Card>
 
-          <div className="space-y-6 lg:sticky lg:top-20">
-            <Preview
-              opts={opts}
-              filename={filename}
-              caption={mode === 'payment' ? t.standards[payment.country] : undefined}
-              onExport={(thumb) => setHistory((h) => pushHistory(h, { label: label || t.appName, thumb, state }))}
-              t={t}
-            />
-            <History
-              items={history}
-              onPick={(i) => setState(i.state)}
-              onClear={() => setHistory([])}
-              t={t}
-            />
-          </div>
-        </div>
+              <div className="space-y-6 lg:sticky lg:top-20">
+                <Preview
+                  opts={opts}
+                  filename={filename}
+                  caption={mode === 'payment' ? t.standards[payment.country] : undefined}
+                  onExport={(thumb) =>
+                    setHistory((h) =>
+                      pushHistory(h, {
+                        label: label || t.appName,
+                        thumb,
+                        state,
+                      }),
+                    )
+                  }
+                  t={t}
+                />
+                <History items={history} onPick={(i) => setState(i.state)} onClear={() => setHistory([])} t={t} />
+              </div>
+            </div>
+          </>
+        )}
 
-        <footer className="mt-16 flex items-center justify-center gap-2 text-xs text-neutral-400">
-          <Lock className="h-3.5 w-3.5" /> {t.footer}
+        <footer className="mt-16 flex flex-col items-center gap-3 text-xs text-neutral-400">
+          <span className="flex items-center gap-2">
+            <Lock className="h-3.5 w-3.5" /> {t.footer}
+          </span>
+          <nav className="flex gap-4">
+            <a href="#impressum" className="hover:text-mint-600">
+              {t.legal.impressum}
+            </a>
+            <a href="#datenschutz" className="hover:text-mint-600">
+              {t.legal.privacy}
+            </a>
+          </nav>
         </footer>
       </main>
     </div>

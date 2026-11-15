@@ -174,4 +174,37 @@ describe('BarMint app', () => {
     location.hash = linkA
     await screen.findByDisplayValue('Link A')
   })
+
+  it('opens the legal pages from the footer and keeps the form on back', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+    await user.clear(field(/^Name/))
+    await user.type(field(/^Name/), 'Keep me')
+    const formHash = location.hash
+
+    await user.click(screen.getByRole('link', { name: 'Legal notice' }))
+    expect(await screen.findByRole('heading', { name: 'Legal notice' })).toBeInTheDocument()
+    expect(location.hash).toBe('#impressum')
+
+    await user.click(screen.getByRole('link', { name: 'Privacy' }))
+    expect(await screen.findByRole('heading', { name: 'Privacy policy' })).toBeInTheDocument()
+
+    location.hash = formHash
+    expect(await screen.findByDisplayValue('Keep me')).toBeInTheDocument()
+  })
+
+  it('opens a legal page from a direct link', () => {
+    history.replaceState(null, '', '/#datenschutz')
+    render(<App />)
+    expect(screen.getByRole('heading', { name: 'Privacy policy' })).toBeInTheDocument()
+    expect(location.hash).toBe('#datenschutz')
+  })
+
+  it('back from a direct legal link goes to the form, not off the site', async () => {
+    history.replaceState(null, '', '/#impressum')
+    render(<App />)
+    await userEvent.click(screen.getByRole('button', { name: /back/i }))
+    expect(await screen.findByRole('textbox', { name: /^Name/ })).toBeInTheDocument()
+    expect(location.hash).toMatch(/^#s=/)
+  })
 })

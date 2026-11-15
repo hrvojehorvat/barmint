@@ -57,6 +57,7 @@ const en = {
   share: 'Copy link',
   linkCopied: 'Link copied',
   footer: 'Runs 100% in your browser. Your data never leaves your device.',
+  legal: { impressum: 'Legal notice', privacy: 'Privacy' },
   errors: {
     required: 'Required',
     tooLong: 'Too long (max. {n} characters)',
@@ -133,6 +134,7 @@ const de: Dict = {
   share: 'Link kopieren',
   linkCopied: 'Link kopiert',
   footer: 'Läuft zu 100 % im Browser. Deine Daten verlassen nie dein Gerät.',
+  legal: { impressum: 'Impressum', privacy: 'Datenschutz' },
   errors: {
     required: 'Pflichtfeld',
     tooLong: 'Zu lang (max. {n} Zeichen)',
