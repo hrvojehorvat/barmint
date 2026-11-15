@@ -122,12 +122,14 @@ const privacy: Record<Lang, { title: string; sections: Section[] }> = {
       [
         'Hosting und Server-Logs',
         <p>
-          Die Website wird bei Microsoft Azure (Static Web Apps, Rechenzentrum in Westeuropa) gehostet. Beim Aufruf
-          verarbeitet Microsoft technisch notwendige Daten wie IP-Adresse, Zeitpunkt, aufgerufene Datei und
+          Die Website wird bei Microsoft Azure (Static Web Apps) gehostet. Die Inhalte werden über das weltweite
+          Netzwerk von Microsoft ausgeliefert, die Verwaltung der Website liegt in der Region USA (East US 2). Beim
+          Aufruf verarbeitet Microsoft technisch notwendige Daten wie IP-Adresse, Zeitpunkt, aufgerufene Datei und
           Browser-Kennung, um die Seite auszuliefern und vor Missbrauch zu schützen. Rechtsgrundlage ist Art. 6 Abs. 1
           lit. f DSGVO (berechtigtes Interesse an einem sicheren Betrieb). Microsoft handelt als Auftragsverarbeiter auf
-          Grundlage der Microsoft-Datenschutzbestimmungen (DPA). Eine Übermittlung in die USA ist nicht auszuschließen;
-          Microsoft ist nach dem EU-US Data Privacy Framework zertifiziert. Wir werten diese Logs nicht aus.
+          Grundlage der Microsoft-Datenschutzbestimmungen (DPA). Dabei werden Daten in die USA übermittelt; Microsoft
+          ist nach dem EU-US Data Privacy Framework zertifiziert (Angemessenheitsbeschluss, Art. 45 DSGVO). Wir werten
+          diese Logs nicht aus.
         </p>,
       ],
       [
@@ -172,12 +174,13 @@ const privacy: Record<Lang, { title: string; sections: Section[] }> = {
       [
         'Hosting and server logs',
         <p>
-          The site is hosted on Microsoft Azure (Static Web Apps, West Europe data centre). When you open it, Microsoft
-          processes technically necessary data such as your IP address, time, requested file and browser identifier to
-          deliver the page and protect it from abuse. The legal basis is Art. 6(1)(f) GDPR (legitimate interest in
-          secure operation). Microsoft acts as a processor under its Data Protection Addendum (DPA). Transfers to the
-          USA cannot be ruled out; Microsoft is certified under the EU-US Data Privacy Framework. We do not analyse
-          these logs.
+          The site is hosted on Microsoft Azure (Static Web Apps). Content is delivered through Microsoft's worldwide
+          network; the site is managed in the US region (East US 2). When you open it, Microsoft processes technically
+          necessary data such as your IP address, time, requested file and browser identifier to deliver the page and
+          protect it from abuse. The legal basis is Art. 6(1)(f) GDPR (legitimate interest in secure operation).
+          Microsoft acts as a processor under its Data Protection Addendum (DPA). Data is transferred to the USA in the
+          process; Microsoft is certified under the EU-US Data Privacy Framework (adequacy decision, Art. 45 GDPR). We
+          do not analyse these logs.
         </p>,
       ],
       [

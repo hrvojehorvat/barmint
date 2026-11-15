@@ -8,7 +8,7 @@
 #
 # What you end up with:
 #   - Resource group  barmint-rg  (West Europe)
-#   - Static Web App  barmint     (Free plan, €0/month)
+#   - Static Web App  barmint     (East US 2, Free plan, €0/month)
 #   - GitHub secret with the deploy token
 #   - GitHub Actions: every push to master → npm test → build → deploy
 #   - Budget alert: email as soon as the subscription costs anything
@@ -19,7 +19,9 @@ cd "$(dirname "$0")/.."
 # --- Settings ---------------------------------------------------------------
 RG="barmint-rg"
 APP="barmint"
-LOCATION="westeurope"            # Free plan regions: westeurope, centralus, eastus2, westus2, eastasia
+LOCATION="westeurope"            # resource group (only metadata)
+APP_LOCATION="eastus2"           # Free plan regions: westeurope, centralus, eastus2, westus2, eastasia
+                                 # (westeurope refused new apps in Nov 2026; content is served worldwide anyway)
 REPO="hrvojehorvat/barmint"
 BUDGET_EUR=1                     # alert threshold base (in your billing currency)
 
@@ -59,7 +61,7 @@ az group create --name "$RG" --location "$LOCATION" -o table
 az staticwebapp create \
   --name "$APP" \
   --resource-group "$RG" \
-  --location "$LOCATION" \
+  --location "$APP_LOCATION" \
   --sku Free \
   -o table
 
