@@ -25,6 +25,7 @@ describe('Shell', () => {
     expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(/Software development and AI/)
     expect(screen.getByRole('link', { name: /BarMint/ })).toHaveAttribute('href', '/barmint')
     expect(document.title).toBe('Mrvoje · Software development & AI')
+    expect(screen.getByRole('link', { name: 'Mrvoje (home)' })).toHaveAttribute('href', '/')
   })
 
   it('navigates to the projects page and into BarMint', async () => {

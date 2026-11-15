@@ -1,12 +1,13 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core'
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router'
 import { SITE } from '../../site'
+import { MrvojeLogo } from './logo'
 
 /** Portfolio frame: header with navigation, page content, footer. Neutral colours (no project accent). */
 @Component({
   selector: 'app-portfolio-layout',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterLink, RouterLinkActive, RouterOutlet],
+  imports: [MrvojeLogo, RouterLink, RouterLinkActive, RouterOutlet],
   host: { class: 'relative block min-h-screen overflow-x-hidden' },
   template: `
     <!-- ambient background -->
@@ -20,7 +21,13 @@ import { SITE } from '../../site'
       class="sticky top-0 z-20 border-b border-black/5 dark:border-white/10 bg-white/70 dark:bg-black/50 backdrop-blur-2xl"
     >
       <div class="mx-auto flex h-14 max-w-5xl items-center justify-between px-4 sm:px-6">
-        <a routerLink="/" class="text-[17px] font-semibold tracking-tight text-neutral-900 dark:text-white">{{ name }}</a>
+        <a
+          routerLink="/"
+          [attr.aria-label]="name + ' (home)'"
+          class="group -mx-1 rounded-md px-1 py-1.5 text-neutral-900 dark:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-neutral-400"
+        >
+          <app-mrvoje-logo class="h-[22px]" />
+        </a>
         <nav aria-label="Main" class="flex items-center gap-1">
           <a
             routerLink="/projects"
