@@ -1,0 +1,31 @@
+<!doctype html>
+<!-- Source for public/og-image.png (1200x630): the preview shown when the link is shared. -->
+<meta charset="utf-8">
+<style>
+  html,body{margin:0;width:1200px;height:630px;overflow:hidden}
+  body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display',system-ui,sans-serif;background:#f3faf7;position:relative;color:#0a0a0a}
+  .blob{position:absolute;border-radius:50%;filter:blur(80px)}
+  .wrap{position:relative;display:flex;align-items:center;justify-content:space-between;height:100%;padding:0 90px;box-sizing:border-box}
+  .logo{display:flex;align-items:center;gap:22px}
+  .logo img{width:92px;height:92px;border-radius:22px;box-shadow:0 14px 40px -12px rgba(31,174,136,.8)}
+  .word{font-size:84px;font-weight:600;letter-spacing:-.03em}
+  .word span{color:#1fae88}
+  h1{margin:44px 0 0;font-size:50px;line-height:1.1;font-weight:600;letter-spacing:-.025em;max-width:640px}
+  h1 span{background:linear-gradient(90deg,#138c6f,#4cc9a5,#2dd4bf);-webkit-background-clip:text;color:transparent}
+  .chips{display:flex;gap:12px;margin-top:34px}
+  .chip{font-size:22px;font-weight:500;padding:10px 20px;border-radius:999px;background:#fff;color:#11705a;box-shadow:0 0 0 1px rgba(0,0,0,.06)}
+  .card{background:#fff;border-radius:40px;padding:38px;box-shadow:0 0 0 1px rgba(0,0,0,.05),0 30px 70px -24px rgba(17,74,62,.35)}
+  .card img{width:280px;height:280px;display:block;image-rendering:pixelated}
+</style>
+<body>
+  <div class="blob" style="width:900px;height:600px;left:-200px;top:-320px;background:rgba(127,223,193,.55)"></div>
+  <div class="blob" style="width:600px;height:500px;right:-150px;bottom:-250px;background:rgba(176,238,216,.7)"></div>
+  <div class="wrap">
+    <div>
+      <div class="logo"><img src="../../public/favicon.svg"><div class="word">Bar<span>Mint</span></div></div>
+      <h1>Payment codes for<br><span>DE · AT · CH.</span></h1>
+      <div class="chips"><div class="chip">GiroCode</div><div class="chip">EPC QR</div><div class="chip">Swiss QR-bill</div><div class="chip">Barcodes</div></div>
+    </div>
+    <div class="card"><img src="sample-qr.svg"></div>
+  </div>
+</body>
