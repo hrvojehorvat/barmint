@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # =============================================================================
-# BarMint → Azure Static Web Apps (Free plan)
+# mrvoje.com (portfolio + projects such as BarMint) → Azure Static Web Apps (Free plan)
+# The Azure resources keep their original "barmint" names: Azure can't rename them.
 #
 # Meant to be run STEP BY STEP: copy each block into your terminal and check
 # its output before going on. Running the whole file also works (it stops on
@@ -22,7 +23,7 @@ APP="barmint"
 LOCATION="westeurope"            # resource group (only metadata)
 APP_LOCATION="eastus2"           # Free plan regions: westeurope, centralus, eastus2, westus2, eastasia
                                  # (westeurope refused new apps in Nov 2026; content is served worldwide anyway)
-REPO="hrvojehorvat/barmint"
+REPO="hrvojehorvat/mrvoje"
 BUDGET_EUR=1                     # alert threshold base (in your billing currency)
 
 # =============================================================================
@@ -138,7 +139,7 @@ az rest --method put \
 #   az consumption usage list --query "[].{name:instanceName, cost:pretaxCost}" -o table
 #
 # Custom domain (after adding a CNAME  www → <defaultHostname>  at your registrar):
-#   az staticwebapp hostname set -n "$APP" -g "$RG" --hostname www.barmint.app
+#   az staticwebapp hostname set -n "$APP" -g "$RG" --hostname mrvoje.com --validation-method dns-txt-token
 #
 # Remove EVERYTHING (stops all costs, deletes the site):
 #   az group delete --name "$RG" --yes

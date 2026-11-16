@@ -7,7 +7,7 @@
   },
   "newProjectRoot": "projects",
   "projects": {
-    "barmint": {
+    "mrvoje": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -61,8 +61,8 @@
             "port": 5173
           },
           "configurations": {
-            "production": { "buildTarget": "barmint:build:production" },
-            "development": { "buildTarget": "barmint:build:development" }
+            "production": { "buildTarget": "mrvoje:build:production" },
+            "development": { "buildTarget": "mrvoje:build:development" }
           },
           "defaultConfiguration": "development"
         },

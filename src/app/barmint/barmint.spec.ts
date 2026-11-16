@@ -32,6 +32,17 @@ describe('BarMint app', () => {
     expect(screen.getByRole('link', { name: 'Mrvoje' })).toHaveAttribute('href', '/')
   })
 
+  it('shows its own tab icon and restores the site icon when left', async () => {
+    const icon = Object.assign(document.createElement('link'), { rel: 'icon' })
+    icon.setAttribute('href', '/favicon.svg')
+    document.head.append(icon)
+    const { view } = await setup()
+    expect(icon.getAttribute('href')).toBe('/barmint-icon.svg')
+    view.fixture.destroy()
+    expect(icon.getAttribute('href')).toBe('/favicon.svg')
+    icon.remove()
+  })
+
   it('marks required fields in the payment form', async () => {
     await setup()
     expect(field(/^Name/)).toHaveAttribute('aria-required', 'true')

@@ -126,7 +126,14 @@ export class BarMint {
       window.scrollTo(0, 0)
     }
     window.addEventListener('hashchange', onHash)
+
+    // BarMint keeps its own browser-tab icon; the rest of the site uses the mrvoje one.
+    const icon = document.querySelector<HTMLLinkElement>('link[rel="icon"]')
+    const siteIcon = icon?.getAttribute('href')
+    icon?.setAttribute('href', '/barmint-icon.svg')
+
     inject(DestroyRef).onDestroy(() => {
+      if (siteIcon) icon?.setAttribute('href', siteIcon)
       window.removeEventListener('hashchange', onHash)
       clearTimeout(this.linkTimer)
     })
