@@ -15,6 +15,18 @@
   --color-mint-800: #12594a;
   --color-mint-900: #114a3e;
 
+  /* Plumcast. Keep in sync with apps/plumcast/src/ui/tokens.ts (checked by its tests). */
+  --color-plum-50: #faf5fe;
+  --color-plum-100: #f2e6fc;
+  --color-plum-200: #e2c8f8;
+  --color-plum-300: #c79bf0;
+  --color-plum-400: #b47ae6;
+  --color-plum-500: #a45cdb;
+  --color-plum-600: #8a43c0;
+  --color-plum-700: #71359d;
+  --color-plum-800: #5b2c7d;
+  --color-plum-900: #4a2566;
+
   /*
    * Accent: the one colour that differs between the portfolio and each project.
    * Shared UI (src/app/ui) only uses accent-*; a project sets its own with a theme class.
@@ -65,6 +77,19 @@
   --color-accent-700: var(--color-mint-700);
   --color-accent-contrast: #ffffff;
   accent-color: var(--color-mint-500);
+}
+
+.theme-purple {
+  --color-accent-50: var(--color-plum-50);
+  --color-accent-100: var(--color-plum-100);
+  --color-accent-200: var(--color-plum-200);
+  --color-accent-300: var(--color-plum-300);
+  --color-accent-400: var(--color-plum-400);
+  --color-accent-500: var(--color-plum-500);
+  --color-accent-600: var(--color-plum-600);
+  --color-accent-700: var(--color-plum-700);
+  --color-accent-contrast: #ffffff;
+  accent-color: var(--color-plum-500);
 }
 
 @keyframes fadeIn {
