@@ -46,6 +46,13 @@ jobs:
 
       - uses: gradle/actions/setup-gradle@v4
 
+      - name: Release checks
+        if: startsWith(github.ref, 'refs/tags/plumcast-v')
+        run: |
+          version=$(node -p "require('./app.json').expo.version")
+          [ "${GITHUB_REF_NAME#plumcast-v}" = "$version" ] || { echo "::error::Tag $GITHUB_REF_NAME does not match app.json version $version"; exit 1; }
+          [ "$HAS_KEYSTORE" = true ] || { echo "::error::No release keystore (PLUMCAST_KEYSTORE_* secrets): releases are never signed with the debug key"; exit 1; }
+
       - name: Install
         run: npm ci
 
@@ -96,6 +103,7 @@ jobs:
           name="plumcast-${version}.apk"
           mv android/app/build/outputs/apk/release/app-release.apk "$name"
           echo "name=$name" >> "$GITHUB_OUTPUT"
+          echo "version=$version" >> "$GITHUB_OUTPUT"
           echo "Built $name ($(du -h "$name" | cut -f1)), signed with $([ "$HAS_KEYSTORE" = true ] && echo 'the release keystore' || echo 'the debug key')" >> "$GITHUB_STEP_SUMMARY"
 
       - uses: actions/upload-artifact@v4
@@ -104,10 +112,28 @@ jobs:
           path: apps/plumcast/${{ steps.apk.outputs.name }}
           if-no-files-found: error
 
+      # plumcast.apk (fixed name) keeps github.com/hrvojehorvat/mrvoje/releases/latest/download/plumcast.apk working for every version.
+      - name: Release files
+        if: startsWith(github.ref, 'refs/tags/plumcast-v')
+        run: |
+          cp "${{ steps.apk.outputs.name }}" plumcast.apk
+          cat > release-notes.md <<'EOF'
+          Plumcast for Android phones, Android TV and Amazon Fire TV (Fire OS 6 or newer). One APK for 32- and 64-bit devices.
+
+          **Install**
+          - Phone / Android TV: download `plumcast.apk` and open it (allow installing from this source when asked).
+          - Fire TV: Settings → My Fire TV → Developer options → turn on *Apps from Unknown Sources* (or allow the Downloader app). In the free **Downloader** app, enter `github.com/hrvojehorvat/mrvoje/releases/latest/download/plumcast.apk`.
+
+          Plumcast is a player only: it ships no channels, playlists or content. Use it with a playlist you are entitled to.
+          EOF
+
       - name: GitHub Release
         if: startsWith(github.ref, 'refs/tags/plumcast-v')
         uses: softprops/action-gh-release@v2
         with:
-          name: Plumcast ${{ github.ref_name }}
-          files: apps/plumcast/${{ steps.apk.outputs.name }}
-          generate_release_notes: true
+          name: Plumcast ${{ steps.apk.outputs.version }}
+          body_path: apps/plumcast/release-notes.md
+          make_latest: true
+          files: |
+            apps/plumcast/plumcast.apk
+            apps/plumcast/${{ steps.apk.outputs.name }}
