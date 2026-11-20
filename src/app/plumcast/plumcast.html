@@ -1,0 +1,161 @@
+<!-- Hero -->
+<section class="pt-14 sm:pt-20 pb-12">
+  <div class="flex items-center gap-4">
+    <app-plumcast-logo class="h-14 w-14 sm:h-16 sm:w-16" />
+    <div>
+      <p class="text-sm font-medium text-accent-600 dark:text-accent-400">For Android TV, Fire TV and phones</p>
+      <h1 class="text-4xl sm:text-5xl font-semibold tracking-[-0.03em] text-neutral-900 dark:text-white">Plumcast</h1>
+    </div>
+  </div>
+
+  <p class="mt-6 max-w-2xl text-xl sm:text-2xl font-medium leading-snug tracking-[-0.01em] text-neutral-900 dark:text-white">
+    A calm, fast IPTV player built for the remote.
+    <span class="text-neutral-500 dark:text-neutral-400">Bring your own playlist: Live TV, catch-up, a TV guide, films and series.</span>
+  </p>
+
+  <div class="mt-8 flex flex-wrap items-center gap-3">
+    <a
+      [href]="links.apk"
+      class="inline-flex items-center gap-2 rounded-full bg-accent-500 px-6 py-3 text-[15px] font-semibold text-accent-contrast shadow-[0_8px_24px_-8px_color-mix(in_oklab,var(--color-accent-500)_70%,transparent)] transition hover:bg-accent-600 active:scale-[0.97] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-500"
+    >
+      <svg lucideDownload class="h-4.5 w-4.5"></svg>
+      Download for Android
+    </a>
+    <a
+      [href]="links.releases"
+      target="_blank"
+      rel="noopener"
+      class="inline-flex items-center gap-2 rounded-full bg-black/[0.06] dark:bg-white/10 px-5 py-3 text-[15px] font-medium text-neutral-800 dark:text-white transition hover:bg-black/10 dark:hover:bg-white/15"
+    >
+      All versions
+      <svg lucideExternalLink class="h-4 w-4 opacity-60"></svg>
+    </a>
+  </div>
+  <p class="mt-3 text-sm text-neutral-500 dark:text-neutral-400">Free · no account · no ads · Android 7+ and Fire OS 6+ · APK, about 50 MB</p>
+
+  <figure class="mt-12">
+    <img
+      [src]="tvShots[0].src"
+      [alt]="tvShots[0].alt"
+      width="1600"
+      height="900"
+      class="w-full rounded-[22px] sm:rounded-[28px] bg-[#0c0a12] ring-1 ring-black/10 dark:ring-white/10 shadow-[0_30px_80px_-30px_rgba(74,37,102,0.55)]"
+    />
+  </figure>
+</section>
+
+<!-- Features -->
+<section aria-labelledby="features-title" class="pb-14">
+  <h2 id="features-title" class="text-xs font-semibold uppercase tracking-[0.08em] text-neutral-400 dark:text-neutral-500 mb-4">What it does</h2>
+  <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+    @for (f of features; track f.title) {
+      <div appCard class="p-6">
+        <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-accent-500/12 text-accent-600 dark:text-accent-400">
+          @switch (f.icon) {
+            @case ('tv') { <svg lucideTv class="h-5 w-5"></svg> }
+            @case ('history') { <svg lucideHistory class="h-5 w-5"></svg> }
+            @case ('guide') { <svg lucideCalendarDays class="h-5 w-5"></svg> }
+            @case ('films') { <svg lucideClapperboard class="h-5 w-5"></svg> }
+            @case ('search') { <svg lucideSearch class="h-5 w-5"></svg> }
+            @case ('remote') { <svg lucideGamepad2 class="h-5 w-5"></svg> }
+            @case ('playlist') { <svg lucideListVideo class="h-5 w-5"></svg> }
+            @case ('private') { <svg lucideShieldCheck class="h-5 w-5"></svg> }
+          }
+        </span>
+        <h3 class="mt-4 text-[17px] font-semibold tracking-tight text-neutral-900 dark:text-white">{{ f.title }}</h3>
+        <p class="mt-1.5 text-[15px] leading-relaxed text-neutral-500 dark:text-neutral-400">{{ f.text }}</p>
+      </div>
+    }
+  </div>
+</section>
+
+<!-- Screenshots -->
+<section aria-labelledby="shots-title" class="pb-14">
+  <h2 id="shots-title" class="text-xs font-semibold uppercase tracking-[0.08em] text-neutral-400 dark:text-neutral-500 mb-4">Screenshots</h2>
+  <div class="grid gap-4 sm:grid-cols-2">
+    @for (s of tvShots.slice(1); track s.src) {
+      <figure>
+        <img [src]="s.src" [alt]="s.alt" width="1600" height="900" loading="lazy" class="w-full rounded-2xl bg-[#0c0a12] ring-1 ring-black/10 dark:ring-white/10" />
+        <figcaption class="mt-2 text-sm text-neutral-500 dark:text-neutral-400">{{ s.alt }}</figcaption>
+      </figure>
+    }
+    <figure class="flex gap-4">
+      @for (s of phoneShots; track s.src) {
+        <img [src]="s.src" [alt]="s.alt" width="780" height="1688" loading="lazy" class="w-[calc(50%-0.5rem)] self-start rounded-2xl bg-[#0c0a12] ring-1 ring-black/10 dark:ring-white/10" />
+      }
+    </figure>
+  </div>
+  <p class="mt-4 text-sm text-neutral-500 dark:text-neutral-400">
+    The screenshots use a made-up demo playlist: channel names, programmes and posters are invented.
+  </p>
+</section>
+
+<!-- Install -->
+<section aria-labelledby="install-title" class="pb-14">
+  <h2 id="install-title" class="text-xs font-semibold uppercase tracking-[0.08em] text-neutral-400 dark:text-neutral-500 mb-4">Install</h2>
+  <div class="grid gap-4 lg:grid-cols-3">
+    <div appCard class="p-6 lg:col-span-2">
+      <h3 class="text-[17px] font-semibold tracking-tight text-neutral-900 dark:text-white">Amazon Fire TV Stick</h3>
+      <ol class="mt-4 space-y-3 text-[15px] leading-relaxed text-neutral-600 dark:text-neutral-300 list-decimal pl-5 marker:text-accent-500 marker:font-semibold">
+        <li>On the Fire TV home screen, search for <b class="font-semibold text-neutral-900 dark:text-white">Downloader</b> and install it (free).</li>
+        <li>
+          Open <b class="font-semibold text-neutral-900 dark:text-white">Settings → My Fire TV → Developer options</b> and allow apps from
+          unknown sources for Downloader. No Developer options? Go to <b class="font-semibold text-neutral-900 dark:text-white">My Fire TV → About</b> and
+          press OK on the device name 7 times.
+        </li>
+        <li>
+          Open Downloader, type this address and press Go:
+          <span class="mt-2 flex flex-wrap items-center gap-2">
+            <code class="rounded-xl bg-black/[0.05] dark:bg-white/10 px-3 py-1.5 font-mono text-[15px] text-neutral-900 dark:text-white">{{ links.short }}</code>
+            <button
+              type="button"
+              (click)="copyShort()"
+              class="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-medium text-accent-600 dark:text-accent-400 hover:bg-accent-500/10"
+            >
+              @if (copied()) {
+                <svg lucideCheck class="h-4 w-4"></svg> Copied
+              } @else {
+                <svg lucideCopy class="h-4 w-4"></svg> Copy
+              }
+            </button>
+          </span>
+        </li>
+        <li>Install, open Plumcast and add your playlist. You can delete the downloaded file afterwards.</li>
+      </ol>
+      <p class="mt-4 text-sm text-neutral-500 dark:text-neutral-400">
+        Works on Fire OS 6 and newer (most sticks since 2018). The newest Fire TV models with Vega OS can't install Android apps.
+      </p>
+    </div>
+
+    <div class="grid gap-4">
+      <div appCard class="p-6">
+        <h3 class="text-[17px] font-semibold tracking-tight text-neutral-900 dark:text-white">Android TV / Google TV</h3>
+        <p class="mt-2 text-[15px] leading-relaxed text-neutral-600 dark:text-neutral-300">
+          Same as Fire TV: install Downloader from Google Play, allow it to install apps, and open <code class="font-mono text-[14px]">{{ links.short }}</code>.
+        </p>
+      </div>
+      <div appCard class="p-6">
+        <h3 class="text-[17px] font-semibold tracking-tight text-neutral-900 dark:text-white">Android phone</h3>
+        <p class="mt-2 text-[15px] leading-relaxed text-neutral-600 dark:text-neutral-300">
+          Tap <a [href]="links.apk" class="font-medium text-accent-600 dark:text-accent-400 hover:underline">Download for Android</a>, open the file and
+          allow your browser to install apps when asked.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Disclaimer -->
+<section aria-labelledby="note-title">
+  <div appCard class="p-6 sm:p-7">
+    <h2 id="note-title" class="text-[17px] font-semibold tracking-tight text-neutral-900 dark:text-white">No content included</h2>
+    <p class="mt-2 max-w-3xl text-[15px] leading-relaxed text-neutral-500 dark:text-neutral-400">
+      Plumcast is only a player. It comes without channels, playlists or links, and I don't sell or recommend any provider. Use it with a playlist
+      you are allowed to watch. Your login stays on your device: no account, no tracking, no servers of mine in between.
+    </p>
+    <p class="mt-4 text-sm text-neutral-500 dark:text-neutral-400">
+      Open source:
+      <a [href]="links.source" target="_blank" rel="noopener" class="font-medium text-accent-600 dark:text-accent-400 hover:underline">source code on GitHub</a>
+    </p>
+  </div>
+</section>

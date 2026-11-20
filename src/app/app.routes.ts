@@ -11,6 +11,11 @@ export const routes: Routes = [
     children: [
       { path: '', component: Home, title: `${SITE.name} · Software development & AI` },
       { path: 'projects', component: ProjectsPage, title: `Projects · ${SITE.name}` },
+      {
+        path: 'plumcast',
+        loadComponent: () => import('./plumcast/plumcast').then((m) => m.Plumcast),
+        title: 'Plumcast · IPTV player for Android TV, Fire TV and phones',
+      },
     ],
   },
   // Projects are lazy-loaded: the portfolio doesn't download their code (BarMint brings bwip-js).

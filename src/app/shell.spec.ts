@@ -43,6 +43,21 @@ describe('Shell', () => {
     expect(location.hash).toMatch(/^#s=/)
   })
 
+  it('opens the Plumcast page from its card, with the download links', async () => {
+    const user = userEvent.setup()
+    const view = await open('/')
+    await user.click(screen.getByRole('link', { name: /Plumcast/ }))
+    expect(await screen.findByRole('heading', { name: 'Plumcast', level: 1 })).toBeInTheDocument()
+    await view.fixture.whenStable()
+    expect(TestBed.inject(Router).url).toBe('/plumcast')
+    expect(document.title).toMatch(/^Plumcast/)
+    for (const link of screen.getAllByRole('link', { name: /Download for Android/ })) {
+      expect(link).toHaveAttribute('href', 'https://github.com/hrvojehorvat/mrvoje/releases/latest/download/plumcast.apk')
+    }
+    expect(screen.getAllByText('mrvoje.com/plumcast.apk').length).toBeGreaterThan(0)
+    expect(screen.getByRole('heading', { name: 'No content included' })).toBeInTheDocument()
+  })
+
   it('shows a recovery screen instead of a blank page and resets the link', async () => {
     vi.spyOn(console, 'error').mockImplementation(() => {})
     const view = await open('/barmint#s=boom')

@@ -10,7 +10,7 @@ export interface Project {
   tags: string[]
   theme: string
   /** Project has its own logo component (shown on the card); otherwise a plain accent tile. */
-  logo?: 'barmint'
+  logo?: 'barmint' | 'plumcast'
 }
 
 export const PROJECTS: Project[] = [
@@ -23,5 +23,15 @@ export const PROJECTS: Project[] = [
     tags: ['Angular', 'TypeScript', 'Tailwind CSS'],
     theme: 'theme-mint',
     logo: 'barmint',
+  },
+  {
+    slug: 'plumcast',
+    name: 'Plumcast',
+    tagline: 'IPTV player for Android TV, Fire TV and phones',
+    description:
+      'Bring your own playlist: Live TV, catch-up, a TV guide, films and series. Built for the TV remote first, with no account and no tracking.',
+    tags: ['React Native', 'TypeScript', 'Android TV'],
+    theme: 'theme-purple',
+    logo: 'plumcast',
   },
 ]

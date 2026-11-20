@@ -12,6 +12,11 @@
   },
   "routes": [
     {
+      "route": "/plumcast.apk",
+      "redirect": "https://github.com/hrvojehorvat/mrvoje/releases/latest/download/plumcast.apk",
+      "statusCode": 302
+    },
+    {
       "route": "/*.{js,css}",
       "headers": { "Cache-Control": "public, max-age=31536000, immutable" }
     },

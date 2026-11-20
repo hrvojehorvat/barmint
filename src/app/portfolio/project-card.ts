@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core'
 import { RouterLink } from '@angular/router'
 import { LucideArrowUpRight } from '@lucide/angular'
 import { BarMintLogo } from '../barmint/logo'
+import { PlumcastLogo } from '../plumcast/logo'
 import { Card } from '../ui/card'
 import type { Project } from './projects'
 
@@ -9,7 +10,7 @@ import type { Project } from './projects'
 @Component({
   selector: 'app-project-card',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [BarMintLogo, Card, RouterLink, LucideArrowUpRight],
+  imports: [BarMintLogo, PlumcastLogo, Card, RouterLink, LucideArrowUpRight],
   host: { class: 'block' },
   template: `
     @let p = project();
@@ -23,6 +24,9 @@ import type { Project } from './projects'
         @switch (p.logo) {
           @case ('barmint') {
             <app-barmint-logo class="h-11 w-11" />
+          }
+          @case ('plumcast') {
+            <app-plumcast-logo class="h-11 w-11" />
           }
           @default {
             <span
