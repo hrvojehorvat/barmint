@@ -12,7 +12,7 @@
 #   - GitHub secret with the deploy token
 #   - GitHub Actions: every push to main → lint, tests → build → deploy
 #   - Custom domain barmint.mrvoje.com
-# The subscription-wide budget alert is set up by the portfolio's script (mrvoje-budget).
+# The subscription-wide budget alert is set up by the portfolio's script (budget "1-eur", covers the whole subscription).
 # =============================================================================
 set -euo pipefail
 cd "$(dirname "$0")/.."
