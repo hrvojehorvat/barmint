@@ -28,17 +28,3 @@ What makes it different:
 - **In your language:** German and English.
 
 Built with Angular, TypeScript and Tailwind CSS.
-
-## Develop
-
-Node 24.
-
-```sh
-npm install
-npm run dev        # http://localhost:5174
-npm test && npm run lint
-npm run build      # dist/
-npm run preview    # http://localhost:4174
-```
-
-Every push to `main` is tested, built and deployed to Azure Static Web Apps by GitHub Actions.
