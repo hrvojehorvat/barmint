@@ -11,7 +11,7 @@ people's privacy.
 
 ### BarMint: payment QR codes for Germany, Austria and Switzerland
 
-[mrvoje.com/barmint](https://mrvoje.com/barmint)
+[barmint.mrvoje.com](https://barmint.mrvoje.com)
 
 In the DACH region you can pay an invoice by scanning a QR code with your banking app. The app
 fills in the recipient, IBAN, amount and reference, so there's nothing to type and no typos.

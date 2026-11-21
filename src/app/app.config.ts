@@ -1,5 +1,5 @@
 import { type ApplicationConfig, ErrorHandler } from '@angular/core'
-import { provideRouter, withInMemoryScrolling } from '@angular/router'
+import { provideRouter, withInMemoryScrolling, type Routes } from '@angular/router'
 import { routes } from './app.routes'
 import { RecoveringErrorHandler } from './recovery'
 
@@ -8,10 +8,13 @@ import { RecoveringErrorHandler } from './recovery'
 // the recovery screen. Global browser errors are deliberately not forwarded
 // (no provideBrowserGlobalErrorListeners): harmless ones such as "ResizeObserver loop"
 // warnings or extension errors would otherwise replace a working app.
-export const appConfig: ApplicationConfig = {
+/** App setup with the given pages (the routes differ per domain, see app.routes.ts). */
+export const configFor = (pages: Routes): ApplicationConfig => ({
   providers: [
-    // Path URLs (/projects, /barmint). Fragments stay with the page: BarMint keeps its form state in #s=….
-    provideRouter(routes, withInMemoryScrolling({ scrollPositionRestoration: 'top' })),
+    // Path URLs (/projects). Projects at their own address (barmint., plumcast.mrvoje.com) are normal links.
+    provideRouter(pages, withInMemoryScrolling({ scrollPositionRestoration: 'top' })),
     { provide: ErrorHandler, useClass: RecoveringErrorHandler },
   ],
-}
+})
+
+export const appConfig = configFor(routes)

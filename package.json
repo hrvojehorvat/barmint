@@ -13,9 +13,7 @@
     "build": "ng build && node scripts/site-url.mjs",
     "preview": "npx --yes serve -s dist -l 4173",
     "lint": "oxlint",
-    "test": "npm run test:lib && npm run test:app",
-    "test:lib": "vitest run",
-    "test:app": "ng test --watch=false",
+    "test": "ng test --watch=false",
     "test:watch": "ng test"
   },
   "dependencies": {
@@ -27,7 +25,6 @@
     "@fontsource-variable/inter": "^5.3.0",
     "@lucide/angular": "^1.73.0",
     "@mrvoje/design": "https://github.com/hrvojehorvat/mrvoje-design/archive/refs/tags/v1.0.0.tar.gz",
-    "bwip-js": "^4.11.4",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0"
   },
@@ -41,11 +38,8 @@
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/user-event": "^14.6.10",
     "@types/node": "^24.19.2",
-    "@types/pngjs": "^6.0.5",
     "jsdom": "^30.0.0",
-    "jsqr": "^1.4.0",
     "oxlint": "^1.90.0",
-    "pngjs": "^7.0.0",
     "postcss": "^8.5.3",
     "tailwindcss": "^4.3.5",
     "typescript": "~6.0.2",

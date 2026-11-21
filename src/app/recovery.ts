@@ -1,5 +1,4 @@
 import { ChangeDetectionStrategy, Component, ErrorHandler, Injectable, inject, signal } from '@angular/core'
-import { detectLang } from '../i18n'
 
 /** Set once an unexpected error happened; the shell then shows the recovery screen. */
 @Injectable({ providedIn: 'root' })
@@ -18,10 +17,7 @@ export class RecoveringErrorHandler implements ErrorHandler {
   }
 }
 
-const text = {
-  en: { title: 'Something went wrong', body: 'This link may be broken. Start again with a fresh form.', reset: 'Start over' },
-  de: { title: 'Etwas ist schiefgelaufen', body: 'Dieser Link ist möglicherweise defekt. Beginne mit einem leeren Formular.', reset: 'Neu starten' },
-}
+const text = { title: 'Something went wrong', body: 'This page could not be shown. Go back to the start page.', reset: 'Start page' }
 
 @Component({
   selector: 'app-recovery',
@@ -43,11 +39,9 @@ const text = {
   `,
 })
 export class Recovery {
-  private readonly failure = inject(AppFailure)
-  protected readonly t = text[detectLang()]
+  protected readonly t = text
 
   protected reset() {
-    history.replaceState(null, '', location.pathname)
-    this.failure.failed.set(false)
+    location.assign('/')
   }
 }

@@ -3,7 +3,7 @@ import { LucideLeaf, LucideScanBarcode } from '@lucide/angular'
 
 /**
  * BarMint app icon. Size it from outside, e.g. `<app-barmint-logo class="h-8 w-8" />`.
- * Kept free of bwip-js so the portfolio can show it without loading BarMint.
+ * A copy of the logo in the BarMint repo (hrvojehorvat/barmint), for the project card.
  */
 @Component({
   selector: 'app-barmint-logo',

@@ -1,3 +1,5 @@
+import { BARMINT_URL, plumcastHref } from '../redirects'
+
 /**
  * Projects shown on the portfolio. Add new ones here.
  * `theme` is the project's accent class from styles.css (same design, own colour).
@@ -11,6 +13,8 @@ export interface Project {
   theme: string
   /** Project has its own logo component (shown on the card); otherwise a plain accent tile. */
   logo?: 'barmint' | 'plumcast'
+  /** Lives at its own address (a subdomain): the card is a normal link to it. Otherwise the card opens /<slug> here. */
+  href?: string
 }
 
 export const PROJECTS: Project[] = [
@@ -23,6 +27,7 @@ export const PROJECTS: Project[] = [
     tags: ['Angular', 'TypeScript', 'Tailwind CSS'],
     theme: 'theme-mint',
     logo: 'barmint',
+    href: BARMINT_URL,
   },
   {
     slug: 'plumcast',
@@ -33,5 +38,6 @@ export const PROJECTS: Project[] = [
     tags: ['React Native', 'TypeScript', 'Android TV'],
     theme: 'theme-purple',
     logo: 'plumcast',
+    href: plumcastHref(),
   },
 ]

@@ -4,73 +4,73 @@ import { TestBed } from '@angular/core/testing'
 import { render, screen } from '@testing-library/angular'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
-import { appConfig } from './app.config'
-import { CANVAS_RENDERER } from './barmint/canvas-renderer'
+import { configFor } from './app.config'
+import { routesFor } from './app.routes'
 import { Shell } from './shell'
 
-/** The real app (router, error handler) opened at `url`. */
-const open = async (url: string) => {
+/** The real app (router, error handler) opened at `url`; `host` picks the routes of that domain. */
+const open = async (url: string, host = 'localhost') => {
   history.replaceState(null, '', url)
-  const view = await render(Shell, {
-    providers: [...appConfig.providers, { provide: CANVAS_RENDERER, useValue: () => {} }],
-  })
+  const view = await render(Shell, { providers: configFor(routesFor(host)).providers })
   await TestBed.inject(Router).navigateByUrl(url)
   await view.fixture.whenStable()
   return view
 }
 
+const APK = 'https://github.com/hrvojehorvat/plumcast/releases/latest/download/plumcast.apk'
+
 describe('Shell', () => {
   it('shows the portfolio home with the project list', async () => {
     await open('/')
     expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(/Software development and AI/)
-    expect(screen.getByRole('link', { name: /BarMint/ })).toHaveAttribute('href', '/barmint')
     expect(document.title).toBe('Mrvoje · Software development & AI')
     expect(screen.getByRole('link', { name: 'Mrvoje (home)' })).toHaveAttribute('href', '/')
   })
 
-  it('navigates to the projects page and into BarMint', async () => {
+  it('links the projects to their own addresses, in their colours', async () => {
     const user = userEvent.setup()
-    const view = await open('/')
+    await open('/')
     await user.click(screen.getByRole('link', { name: 'Projects' }))
     expect(await screen.findByRole('heading', { name: 'Projects', level: 1 })).toBeInTheDocument()
     // TestBed uses a mock browser location, so check the router's URL.
     expect(TestBed.inject(Router).url).toBe('/projects')
 
-    await user.click(screen.getByRole('link', { name: /BarMint/ }))
-    expect(await screen.findByText('Mint')).toBeInTheDocument()
-    await view.fixture.whenStable()
-    expect(TestBed.inject(Router).url).toBe('/barmint')
-    expect(location.hash).toMatch(/^#s=/)
+    const barmint = screen.getByRole('link', { name: /BarMint/ })
+    expect(barmint).toHaveAttribute('href', 'https://barmint.mrvoje.com/')
+    expect(barmint).toHaveClass('theme-mint')
+    // Local dev: the Plumcast page is the /plumcast route (on mrvoje.com it's plumcast.mrvoje.com).
+    const plumcast = screen.getByRole('link', { name: /Plumcast/ })
+    expect(plumcast).toHaveAttribute('href', '/plumcast')
+    expect(plumcast).toHaveClass('theme-purple')
+    // Impressum / privacy live in BarMint.
+    expect(screen.getByRole('link', { name: 'Impressum' })).toHaveAttribute('href', 'https://barmint.mrvoje.com/#impressum')
+    expect(screen.getByRole('link', { name: 'Privacy' })).toHaveAttribute('href', 'https://barmint.mrvoje.com/#datenschutz')
   })
 
-  it('opens the Plumcast page from its card, with the download links', async () => {
-    const user = userEvent.setup()
-    const view = await open('/')
-    await user.click(screen.getByRole('link', { name: /Plumcast/ }))
+  it('shows the Plumcast page with the download links', async () => {
+    await open('/plumcast')
     expect(await screen.findByRole('heading', { name: 'Plumcast', level: 1 })).toBeInTheDocument()
-    await view.fixture.whenStable()
-    expect(TestBed.inject(Router).url).toBe('/plumcast')
     expect(document.title).toMatch(/^Plumcast/)
     for (const link of screen.getAllByRole('link', { name: /Download for Android/ })) {
-      expect(link).toHaveAttribute('href', 'https://github.com/hrvojehorvat/plumcast/releases/latest/download/plumcast.apk')
+      expect(link).toHaveAttribute('href', APK)
     }
     expect(screen.getAllByText('mrvoje.com/plumcast.apk').length).toBeGreaterThan(0)
     expect(screen.getByRole('heading', { name: 'No content included' })).toBeInTheDocument()
   })
 
-  it('shows a recovery screen instead of a blank page and resets the link', async () => {
+  it('on plumcast.mrvoje.com the start page is the Plumcast page', async () => {
+    await open('/', 'plumcast.mrvoje.com')
+    expect(await screen.findByRole('heading', { name: 'Plumcast', level: 1 })).toBeInTheDocument()
+    expect(document.title).toMatch(/^Plumcast/)
+  })
+
+  it('shows a recovery screen instead of a blank page', async () => {
     vi.spyOn(console, 'error').mockImplementation(() => {})
-    const view = await open('/barmint#s=boom')
-    expect(await screen.findByText('Mint')).toBeInTheDocument()
+    const view = await open('/projects')
     view.fixture.debugElement.injector.get(ErrorHandler).handleError(new Error('boom'))
     await view.fixture.whenStable()
-
     expect(screen.getByRole('alert')).toBeInTheDocument()
-    await userEvent.click(screen.getByRole('button', { name: /start over/i }))
-    expect(await screen.findByText('Mint')).toBeInTheDocument()
-    // The broken link is gone; the fresh form writes its own (default) state.
-    expect(location.hash).not.toContain('boom')
-    expect(screen.getByRole('textbox', { name: /^Name/ })).toHaveValue('')
+    expect(screen.getByRole('button', { name: 'Start page' })).toBeInTheDocument()
     vi.restoreAllMocks()
   })
 

@@ -1,7 +1,8 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core'
+import { NgTemplateOutlet } from '@angular/common'
 import { RouterLink } from '@angular/router'
 import { LucideArrowUpRight } from '@lucide/angular'
-import { BarMintLogo } from '../barmint/logo'
+import { BarMintLogo } from './barmint-logo'
 import { PlumcastLogo } from '../plumcast/logo'
 import { Card } from '../ui/card'
 import type { Project } from './projects'
@@ -10,16 +11,20 @@ import type { Project } from './projects'
 @Component({
   selector: 'app-project-card',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [BarMintLogo, PlumcastLogo, Card, RouterLink, LucideArrowUpRight],
+  imports: [BarMintLogo, PlumcastLogo, Card, NgTemplateOutlet, RouterLink, LucideArrowUpRight],
   host: { class: 'block' },
   template: `
     @let p = project();
-    <a
-      appCard
-      [routerLink]="['/', p.slug]"
-      [class]="p.theme"
-      class="group h-full p-6 sm:p-7 transition duration-300 hover:-translate-y-0.5 hover:shadow-[0_1px_2px_rgba(0,0,0,0.04),0_20px_50px_-16px_rgba(0,0,0,0.2)] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent-500"
-    >
+    @let look =
+      'group h-full p-6 sm:p-7 transition duration-300 hover:-translate-y-0.5 hover:shadow-[0_1px_2px_rgba(0,0,0,0.04),0_20px_50px_-16px_rgba(0,0,0,0.2)] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent-500 ' +
+      p.theme;
+    <!-- A project at its own address (subdomain) gets a normal link; pages of this app use the router. -->
+    @if (p.href) {
+      <a appCard [href]="p.href" [class]="look"><ng-container [ngTemplateOutlet]="body" /></a>
+    } @else {
+      <a appCard [routerLink]="['/', p.slug]" [class]="look"><ng-container [ngTemplateOutlet]="body" /></a>
+    }
+    <ng-template #body>
       <span class="flex items-start justify-between gap-4">
         @switch (p.logo) {
           @case ('barmint') {
@@ -52,7 +57,7 @@ import type { Project } from './projects'
           </span>
         }
       </span>
-    </a>
+    </ng-template>
   `,
 })
 export class ProjectCard {
