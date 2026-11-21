@@ -16,14 +16,14 @@ import {
 import { Card } from '../ui/card'
 import { PlumcastLogo } from './logo'
 
-const REPO = 'https://github.com/hrvojehorvat/mrvoje'
+const REPO = 'https://github.com/hrvojehorvat/plumcast'
 
 /** Download links. The short link is a redirect in public/staticwebapp.config.json (easy to type on a TV remote). */
 export const PLUMCAST_LINKS = {
   apk: `${REPO}/releases/latest/download/plumcast.apk`,
   short: 'mrvoje.com/plumcast.apk',
   releases: `${REPO}/releases`,
-  source: `${REPO}/tree/master/apps/plumcast`,
+  source: REPO,
 }
 
 /** Plumcast project page (/plumcast): what it is, screenshots, download and install guide. */

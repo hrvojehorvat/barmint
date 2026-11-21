@@ -3,8 +3,6 @@ name: Test & deploy to Azure Static Web Apps
 on:
   push:
     branches: [master]
-    # Apps under apps/ (e.g. Plumcast) have their own workflows.
-    paths-ignore: ['apps/**']
   workflow_dispatch:
 
 permissions:

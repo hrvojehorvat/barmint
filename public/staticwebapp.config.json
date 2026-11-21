@@ -13,7 +13,7 @@
   "routes": [
     {
       "route": "/plumcast.apk",
-      "redirect": "https://github.com/hrvojehorvat/mrvoje/releases/latest/download/plumcast.apk",
+      "redirect": "https://github.com/hrvojehorvat/plumcast/releases/latest/download/plumcast.apk",
       "statusCode": 302
     },
     {

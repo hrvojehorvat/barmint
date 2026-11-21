@@ -52,7 +52,7 @@ describe('Shell', () => {
     expect(TestBed.inject(Router).url).toBe('/plumcast')
     expect(document.title).toMatch(/^Plumcast/)
     for (const link of screen.getAllByRole('link', { name: /Download for Android/ })) {
-      expect(link).toHaveAttribute('href', 'https://github.com/hrvojehorvat/mrvoje/releases/latest/download/plumcast.apk')
+      expect(link).toHaveAttribute('href', 'https://github.com/hrvojehorvat/plumcast/releases/latest/download/plumcast.apk')
     }
     expect(screen.getAllByText('mrvoje.com/plumcast.apk').length).toBeGreaterThan(0)
     expect(screen.getByRole('heading', { name: 'No content included' })).toBeInTheDocument()

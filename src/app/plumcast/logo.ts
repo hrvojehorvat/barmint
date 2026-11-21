@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core'
 
 /**
- * Plumcast app icon (same drawing as apps/plumcast/src/ui/Logo.tsx): a plum with a leaf and a play mark.
+ * Plumcast app icon (same drawing as src/ui/Logo.tsx in the plumcast repo): a plum with a leaf and a play mark.
  * Size it from outside, e.g. `<app-plumcast-logo class="h-11 w-11" />`.
  */
 @Component({
