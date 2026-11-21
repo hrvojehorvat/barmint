@@ -1,15 +1,15 @@
 #!/usr/bin/env bash
 # =============================================================================
-# mrvoje.com (portfolio + projects such as BarMint) → Azure Static Web Apps (Free plan)
-# The Azure resources keep their original "barmint" names: Azure can't rename them.
+# mrvoje.com (portfolio + the Plumcast page at plumcast.mrvoje.com) → Azure Static Web Apps (Free plan)
+# BarMint (barmint.mrvoje.com) has its own app and script: repo hrvojehorvat/barmint.
 #
 # Meant to be run STEP BY STEP: copy each block into your terminal and check
 # its output before going on. Running the whole file also works (it stops on
 # the first error), but the steps marked [MANUAL] need you in the browser.
 #
 # What you end up with:
-#   - Resource group  barmint-rg  (West Europe)
-#   - Static Web App  barmint     (East US 2, Free plan, €0/month)
+#   - Resource group  mrvoje-rg  (West Europe)
+#   - Static Web App  mrvoje     (East US 2, Free plan, €0/month)
 #   - GitHub secret with the deploy token
 #   - GitHub Actions: every push to master → npm test → build → deploy
 #   - Budget alert: email as soon as the subscription costs anything
@@ -18,8 +18,8 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 
 # --- Settings ---------------------------------------------------------------
-RG="barmint-rg"
-APP="barmint"
+RG="mrvoje-rg"
+APP="mrvoje"
 LOCATION="westeurope"            # resource group (only metadata)
 APP_LOCATION="eastus2"           # Free plan regions: westeurope, centralus, eastus2, westus2, eastasia
                                  # (westeurope refused new apps in Nov 2026; content is served worldwide anyway)
@@ -113,7 +113,7 @@ START="$(date -u +%Y-%m-01T00:00:00Z)"
 END="$(date -u -v+5y +%Y-%m-01T00:00:00Z 2>/dev/null || date -u -d '+5 years' +%Y-%m-01T00:00:00Z)"
 
 az rest --method put \
-  --url "https://management.azure.com/subscriptions/$SUB_ID/providers/Microsoft.Consumption/budgets/barmint-budget?api-version=2023-05-01" \
+  --url "https://management.azure.com/subscriptions/$SUB_ID/providers/Microsoft.Consumption/budgets/mrvoje-budget?api-version=2023-05-01" \
   --body "{
     \"properties\": {
       \"category\": \"Cost\",
@@ -138,9 +138,13 @@ az rest --method put \
 # Costs so far this month (should be 0):
 #   az consumption usage list --query "[].{name:instanceName, cost:pretaxCost}" -o table
 #
-# Custom domain (after adding a CNAME  www → <defaultHostname>  at your registrar):
-#   az staticwebapp hostname set -n "$APP" -g "$RG" --hostname mrvoje.com --validation-method dns-txt-token
+# Custom domains (Free plan: max 2 per app). DNS at Cloudflare, "DNS only" (grey cloud):
+#   mrvoje.com (apex): flattened CNAME @ → <defaultHostname>, plus the TXT record Azure shows:
+#     az staticwebapp hostname set -n "$APP" -g "$RG" --hostname mrvoje.com --validation-method dns-txt-token --no-wait
+#     az staticwebapp hostname show -n "$APP" -g "$RG" --hostname mrvoje.com --query validationToken -o tsv
+#   plumcast.mrvoje.com: CNAME plumcast → <defaultHostname>, then:
+#     az staticwebapp hostname set -n "$APP" -g "$RG" --hostname plumcast.mrvoje.com
 #
 # Remove EVERYTHING (stops all costs, deletes the site):
 #   az group delete --name "$RG" --yes
-#   az rest --method delete --url "https://management.azure.com/subscriptions/$SUB_ID/providers/Microsoft.Consumption/budgets/barmint-budget?api-version=2023-05-01"
+#   az rest --method delete --url "https://management.azure.com/subscriptions/$SUB_ID/providers/Microsoft.Consumption/budgets/mrvoje-budget?api-version=2023-05-01"
