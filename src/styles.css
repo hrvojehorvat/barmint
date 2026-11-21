@@ -1,0 +1,11 @@
+@import 'tailwindcss';
+/* Shared design tokens (palettes, accent-*, dark mode, .theme-mint / .theme-purple, page base): @mrvoje/design. */
+@import '@mrvoje/design/theme.css';
+
+/* Tailwind scans the Angular templates and components. */
+@source './app';
+
+/* Angular hosts are inline by default; make layout hosts behave like the divs they replace. */
+app-root {
+  display: block;
+}

@@ -1,0 +1,54 @@
+{
+  "name": "barmint",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "engines": {
+    "node": ">=22.22.3"
+  },
+  "scripts": {
+    "ng": "ng",
+    "dev": "ng serve",
+    "start": "ng serve",
+    "build": "ng build && node scripts/site-url.mjs",
+    "preview": "npx --yes serve -s dist -l 4174",
+    "lint": "oxlint",
+    "test": "npm run test:lib && npm run test:app",
+    "test:lib": "vitest run",
+    "test:app": "ng test --watch=false",
+    "test:watch": "ng test"
+  },
+  "dependencies": {
+    "@angular/common": "^22.2.0",
+    "@angular/compiler": "^22.2.0",
+    "@angular/core": "^22.2.0",
+    "@angular/platform-browser": "^22.2.0",
+    "@fontsource-variable/inter": "^5.3.0",
+    "@lucide/angular": "^1.73.0",
+    "@mrvoje/design": "https://github.com/hrvojehorvat/mrvoje-design/archive/refs/tags/v1.0.0.tar.gz",
+    "bwip-js": "^4.11.4",
+    "rxjs": "~7.8.0",
+    "tslib": "^2.3.0"
+  },
+  "devDependencies": {
+    "@angular/build": "^22.2.7",
+    "@angular/cli": "^22.2.7",
+    "@angular/compiler-cli": "^22.2.0",
+    "@tailwindcss/postcss": "^4.3.5",
+    "@testing-library/angular": "^19.6.0",
+    "@testing-library/dom": "^10.4.0",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/user-event": "^14.6.10",
+    "@types/node": "^24.19.2",
+    "@types/pngjs": "^6.0.5",
+    "jsdom": "^30.0.0",
+    "jsqr": "^1.4.0",
+    "oxlint": "^1.90.0",
+    "pngjs": "^7.0.0",
+    "postcss": "^8.5.3",
+    "tailwindcss": "^4.3.5",
+    "typescript": "~6.0.2",
+    "vitest": "^5.0.0"
+  },
+  "description": "BarMint: payment QR codes (GiroCode / EPC QR, Swiss QR-bill) and barcodes, served at mrvoje.com/barmint."
+}
